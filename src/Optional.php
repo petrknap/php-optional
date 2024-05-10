@@ -50,4 +50,24 @@ final class Optional
             null => throw new LogicException('Call `isPresent()` before accessing the value.'),
         };
     }
+
+    /**
+     * @param T $other
+     *
+     * @return T
+     */
+    public function orElse(mixed $other): mixed
+    {
+        return $this->value ?? $other;
+    }
+
+    /**
+     * @param callable(T): void $consumer
+     */
+    public function ifPresent(callable $consumer): void
+    {
+        if ($this->value !== null) {
+            $consumer($this->value);
+        }
+    }
 }
