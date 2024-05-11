@@ -16,6 +16,8 @@ final class Optional
     private bool|null $wasPresent = null;
 
     /**
+     * @deprecated will be changed to protected - use {@see self::ofNullable()}/{@see self::of()}/{@see self::empty()}
+     *
      * @param T|null $value
      */
     public function __construct(
@@ -24,11 +26,31 @@ final class Optional
     }
 
     /**
-     * @return self<null>
+     * @return self<T>
      */
     public static function empty(): self
     {
-        return new self(null);
+        return self::ofNullable(null);
+    }
+
+    /**
+     * @param T $value
+     *
+     * @return self<T>
+     */
+    public static function of(mixed $value): self
+    {
+        return $value !== null ? self::ofNullable($value) : throw new LogicException('Value must not be null.');
+    }
+
+    /**
+     * @param T|null $value
+     *
+     * @return self<T>
+     */
+    public static function ofNullable(mixed $value): self
+    {
+        return new self($value);
     }
 
     public function equals(mixed $obj): bool
