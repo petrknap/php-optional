@@ -4,6 +4,8 @@
 >
 > Additional methods that depend on the presence or absence of a contained value are provided, such as `orElse()` (return a default value if value not present) and `ifPresent()` (execute a block of code if the value is present).
 >
+> This is a [value-based](https://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html) class; use of identity-sensitive operations (including reference equality (==), identity hash code, or synchronization) on instances of Optional may have unpredictable results and should be avoided.
+>
 > --
 > [Optional (Java Platform SE 8)](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 
@@ -15,10 +17,14 @@ namespace PetrKnap\Optional;
 /** @var Optinal<string> $optionalString */
 $optionalString = new Optional('value');
 
-echo $optionalString->isPresent() ? $optionalString->get() : 'EMPTY';
-echo $optionalString->orElse('EMPTY');
+echo $optionalString->isPresent() ? $optionalString->get() : 'empty';
+echo $optionalString->orElse('empty');
 
 $optionalString->ifPresent(function (string $value): void { echo $value; });
+
+if ($optionalString->equals('value')) {
+    echo 'It is `value`.';
+}
 ```
 
 ---

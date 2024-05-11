@@ -20,7 +20,12 @@ class ReadmeTest extends TestCase implements MarkdownFileTestInterface
     public static function getExpectedOutputsOfPhpExamples(): iterable
     {
         return [
-            'example' => 'value' . 'value' . 'value',
+            'example' => ''
+                . 'value'
+                . 'value'
+                . 'value'
+                . 'It is `value`.'
+            ,
         ];
     }
 }
