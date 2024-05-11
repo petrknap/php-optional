@@ -13,6 +13,39 @@ class OptionalTest extends TestCase
     private const VALUE = 'value';
     private const OTHER = 'other';
 
+    public function testMethodEmptyReturnsEmptyOptional(): void
+    {
+        self::assertFalse(Optional::empty()->isPresent());
+    }
+
+    public function testMethodOfReturnsOptionalWithValue(): void
+    {
+        $optional = Optional::of(self::VALUE);
+
+        self::assertTrue($optional->isPresent());
+        self::assertSame(self::VALUE, $optional->get());
+    }
+
+    public function testMethodOfThrowsWhenCalledWithNull(): void
+    {
+        self::expectException(LogicException::class);
+        Optional::of(null);
+    }
+
+    #[DataProvider('dataMethodOfNullableWorks')]
+    public function testMethodOfNullableWorks(Optional $expectedOptional, mixed $value): void
+    {
+        self::assertTrue(Optional::ofNullable($value)->equals($expectedOptional));
+    }
+
+    public static function dataMethodOfNullableWorks(): array
+    {
+        return self::makeDataSet([
+            [self::VALUE],
+            [null],
+        ]);
+    }
+
     #[DataProvider('dataMethodEqualsWorks')]
     public function testMethodEqualsWorks(Optional $optional, mixed $obj, bool $expectedResult): void
     {
@@ -21,14 +54,14 @@ class OptionalTest extends TestCase
 
     public static function dataMethodEqualsWorks(): array
     {
-        $optionalValue = new Optional(self::VALUE);
+        $optionalValue = Optional::of(self::VALUE);
         $optionalEmpty = Optional::empty();
         return [
             'equal (value)' => [$optionalValue, self::VALUE, true],
-            'equal (optional)' => [$optionalValue, new Optional(self::VALUE), true],
+            'equal (optional)' => [$optionalValue, Optional::of(self::VALUE), true],
             'equal (empty)' => [$optionalEmpty, Optional::empty(), true],
             'not equal (value)' => [$optionalValue, self::OTHER, false],
-            'not equal (optional)' => [$optionalValue, new Optional(self::OTHER), false],
+            'not equal (optional)' => [$optionalValue, Optional::of(self::OTHER), false],
             'not equal (empty-present)' => [$optionalEmpty, $optionalValue, false],
             'not equal (present-empty)' => [$optionalValue, $optionalEmpty, false],
         ];
@@ -36,7 +69,7 @@ class OptionalTest extends TestCase
 
     public function testMethodGetReturnsValueWhenValueIsPresent(): void
     {
-        $optional = new Optional(self::VALUE);
+        $optional = Optional::of(self::VALUE);
 
         self::assertTrue($optional->isPresent());
         self::assertSame(self::VALUE, $optional->get());
@@ -53,7 +86,7 @@ class OptionalTest extends TestCase
 
     public function testMethodGetThrowsWhenCalledSeparately(): void
     {
-        $optional = new Optional(self::VALUE);
+        $optional = Optional::of(self::VALUE);
 
         self::expectException(LogicException::class);
         $optional->get();
@@ -110,7 +143,7 @@ class OptionalTest extends TestCase
     private static function makeDataSet(array $args): array
     {
         return [
-            'present value' => [new Optional(self::VALUE), ...$args[0]],
+            'present value' => [Optional::of(self::VALUE), ...$args[0]],
             'not present value' => [Optional::empty(), ...$args[1]],
         ];
     }
