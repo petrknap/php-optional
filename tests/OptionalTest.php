@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PetrKnap\Optional;
 
+use Exception as SomeException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -137,6 +138,37 @@ class OptionalTest extends TestCase
         return self::makeDataSet([
             [self::VALUE],
             [self::OTHER],
+        ]);
+    }
+
+    #[DataProvider('dataMethodOrElseGetWorks')]
+    public function testMethodOrElseGetWorks(Optional $optional, string $expectedValue): void
+    {
+        self::assertSame($expectedValue, $optional->orElseGet(static fn(): string => self::OTHER));
+    }
+
+    public static function dataMethodOrElseGetWorks(): array
+    {
+        return self::makeDataSet([
+            [self::VALUE],
+            [self::OTHER],
+        ]);
+    }
+
+    #[DataProvider('dataMethodOrElseThrowWorks')]
+    public function testMethodOrElseThrowWorks(Optional $optional, ?string $expectedValue, ?string $expectedException): void
+    {
+        if ($expectedException) {
+            self::expectException($expectedException);
+        }
+        self::assertSame($expectedValue, $optional->orElseThrow(static fn(): SomeException => new SomeException()));
+    }
+
+    public static function dataMethodOrElseThrowWorks(): array
+    {
+        return self::makeDataSet([
+            [self::VALUE, null],
+            [null, SomeException::class],
         ]);
     }
 
