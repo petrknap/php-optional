@@ -15,10 +15,12 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 namespace PetrKnap\Optional;
 
 /** @var Optinal<string> $optionalString */
-$optionalString = new Optional('value');
+$optionalString = Optional::of('value');
 
 echo $optionalString->isPresent() ? $optionalString->get() : 'empty';
 echo $optionalString->orElse('empty');
+echo $optionalString->orElseGet(fn () => 'empty');
+echo $optionalString->orElseThrow(fn () => new \Exception());
 
 $optionalString->ifPresent(function (string $value): void { echo $value; });
 
