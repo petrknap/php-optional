@@ -31,11 +31,6 @@ final class Optional
         return new self(null);
     }
 
-    public function isPresent(): bool
-    {
-        return $this->wasPresent = $this->value !== null;
-    }
-
     /**
      * @return T
      *
@@ -49,5 +44,30 @@ final class Optional
             false => throw new Exception\NoSuchElement(),
             null => throw new LogicException('Call `isPresent()` before accessing the value.'),
         };
+    }
+
+    /**
+     * @param callable(T): void $consumer
+     */
+    public function ifPresent(callable $consumer): void
+    {
+        if ($this->value !== null) {
+            $consumer($this->value);
+        }
+    }
+
+    public function isPresent(): bool
+    {
+        return $this->wasPresent = $this->value !== null;
+    }
+
+    /**
+     * @param T $other
+     *
+     * @return T
+     */
+    public function orElse(mixed $other): mixed
+    {
+        return $this->value ?? $other;
     }
 }

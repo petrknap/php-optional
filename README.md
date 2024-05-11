@@ -2,6 +2,8 @@
 
 > A container object which may or may not contain a non-null value. If a value is present, `isPresent()` will return `true` and `get()` will return the value.
 >
+> Additional methods that depend on the presence or absence of a contained value are provided, such as `orElse()` (return a default value if value not present) and `ifPresent()` (execute a block of code if the value is present).
+>
 > --
 > [Optional (Java Platform SE 8)](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 
@@ -14,6 +16,9 @@ namespace PetrKnap\Optional;
 $optionalString = new Optional('value');
 
 echo $optionalString->isPresent() ? $optionalString->get() : 'EMPTY';
+echo $optionalString->orElse('EMPTY');
+
+$optionalString->ifPresent(function (string $value): void { echo $value; });
 ```
 
 ---
