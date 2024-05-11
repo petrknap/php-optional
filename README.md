@@ -1,4 +1,4 @@
-# Optional (as in Java Platform SE 8 but in PHP)
+# Optional (like in Java Platform SE 8 but in PHP)
 
 > A container object which may or may not contain a non-null value. If a value is present, `isPresent()` will return `true` and `get()` will return the value.
 >
