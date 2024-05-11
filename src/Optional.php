@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 use LogicException;
+use Throwable;
 
 /**
  * @template T of mixed type of non-null value
@@ -68,12 +69,10 @@ final class Optional
      */
     public function get(): mixed
     {
-        /** @var T */
-        return match ($this->wasPresent) {
-            true => $this->value,
-            false => throw new Exception\NoSuchElement(),
-            null => throw new LogicException('Call `isPresent()` before accessing the value.'),
-        };
+        if ($this->wasPresent === null) {
+            throw new LogicException('Call `isPresent()` before accessing the value.');
+        }
+        return $this->orElseThrow(static fn (): Exception\NoSuchElement => new Exception\NoSuchElement());
     }
 
     /**
@@ -98,6 +97,32 @@ final class Optional
      */
     public function orElse(mixed $other): mixed
     {
-        return $this->value ?? $other;
+        return $this->orElseGet(static fn (): mixed => $other);
+    }
+
+    /**
+     * @param callable(): T $otherSupplier
+     *
+     * @return T
+     */
+    public function orElseGet(callable $otherSupplier): mixed
+    {
+        return $this->value ?? $otherSupplier();
+    }
+
+    /**
+     * @template E of Throwable
+     *
+     * @param callable(): E $exceptionSupplier
+     *
+     * @return T
+     *
+     * @throws E
+     */
+    public function orElseThrow(callable $exceptionSupplier): mixed
+    {
+        return $this->orElseGet(static function () use ($exceptionSupplier): never {
+            throw $exceptionSupplier();
+        });
     }
 }
