@@ -14,7 +14,7 @@
     "allow-plugins": false,
     "sort-packages": true
   },
-  "description": "Optional (as in Java Platform SE 8 but in PHP)",
+  "description": "Optional (like in Java Platform SE 8 but in PHP)",
   "funding": [
     {
       "type": "other",

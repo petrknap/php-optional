@@ -13,6 +13,27 @@ class OptionalTest extends TestCase
     private const VALUE = 'value';
     private const OTHER = 'other';
 
+    #[DataProvider('dataMethodEqualsWorks')]
+    public function testMethodEqualsWorks(Optional $optional, mixed $obj, bool $expectedResult): void
+    {
+        self::assertSame($expectedResult, $optional->equals($obj));
+    }
+
+    public static function dataMethodEqualsWorks(): array
+    {
+        $optionalValue = new Optional(self::VALUE);
+        $optionalEmpty = Optional::empty();
+        return [
+            'equal (value)' => [$optionalValue, self::VALUE, true],
+            'equal (optional)' => [$optionalValue, new Optional(self::VALUE), true],
+            'equal (empty)' => [$optionalEmpty, Optional::empty(), true],
+            'not equal (value)' => [$optionalValue, self::OTHER, false],
+            'not equal (optional)' => [$optionalValue, new Optional(self::OTHER), false],
+            'not equal (empty-present)' => [$optionalEmpty, $optionalValue, false],
+            'not equal (present-empty)' => [$optionalValue, $optionalEmpty, false],
+        ];
+    }
+
     public function testMethodGetReturnsValueWhenValueIsPresent(): void
     {
         $optional = new Optional(self::VALUE);

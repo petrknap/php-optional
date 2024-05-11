@@ -31,6 +31,14 @@ final class Optional
         return new self(null);
     }
 
+    public function equals(mixed $obj): bool
+    {
+        if ($obj instanceof Optional) {
+            $obj = $obj->isPresent() ? $obj->get() : null;
+        }
+        return $this->value === $obj;
+    }
+
     /**
      * @return T
      *
