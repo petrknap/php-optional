@@ -38,20 +38,6 @@ class OptionalTest extends TestCase
         $optional->get();
     }
 
-    #[DataProvider('dataMethodOrElseWorks')]
-    public function testMethodOrElseWorks(Optional $optional, string $expectedValue): void
-    {
-        self::assertSame($expectedValue, $optional->orElse(self::OTHER));
-    }
-
-    public static function dataMethodOrElseWorks(): array
-    {
-        return self::makeDataSet([
-            [self::VALUE],
-            [self::OTHER],
-        ]);
-    }
-
     #[DataProvider('dataMethodIfPresentWorks')]
     public function testMethodIfPresentWorks(Optional $optional, bool $expectedInvoke): void
     {
@@ -69,6 +55,34 @@ class OptionalTest extends TestCase
         return self::makeDataSet([
             [true],
             [false],
+        ]);
+    }
+
+    #[DataProvider('dataMethodIsPresentWorks')]
+    public function testMethodIsPresentWorks(Optional $optional, bool $expectedReturn): void
+    {
+        self::assertSame($expectedReturn, $optional->isPresent());
+    }
+
+    public static function dataMethodIsPresentWorks(): array
+    {
+        return self::makeDataSet([
+            [true],
+            [false],
+        ]);
+    }
+
+    #[DataProvider('dataMethodOrElseWorks')]
+    public function testMethodOrElseWorks(Optional $optional, string $expectedValue): void
+    {
+        self::assertSame($expectedValue, $optional->orElse(self::OTHER));
+    }
+
+    public static function dataMethodOrElseWorks(): array
+    {
+        return self::makeDataSet([
+            [self::VALUE],
+            [self::OTHER],
         ]);
     }
 

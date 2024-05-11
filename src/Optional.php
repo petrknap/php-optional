@@ -31,11 +31,6 @@ final class Optional
         return new self(null);
     }
 
-    public function isPresent(): bool
-    {
-        return $this->wasPresent = $this->value !== null;
-    }
-
     /**
      * @return T
      *
@@ -52,16 +47,6 @@ final class Optional
     }
 
     /**
-     * @param T $other
-     *
-     * @return T
-     */
-    public function orElse(mixed $other): mixed
-    {
-        return $this->value ?? $other;
-    }
-
-    /**
      * @param callable(T): void $consumer
      */
     public function ifPresent(callable $consumer): void
@@ -69,5 +54,20 @@ final class Optional
         if ($this->value !== null) {
             $consumer($this->value);
         }
+    }
+
+    public function isPresent(): bool
+    {
+        return $this->wasPresent = $this->value !== null;
+    }
+
+    /**
+     * @param T $other
+     *
+     * @return T
+     */
+    public function orElse(mixed $other): mixed
+    {
+        return $this->value ?? $other;
     }
 }
