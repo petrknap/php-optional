@@ -55,16 +55,24 @@ class OptionalTest extends TestCase
 
     public static function dataMethodEqualsWorks(): array
     {
-        $optionalValue = Optional::of(self::VALUE);
-        $optionalEmpty = Optional::empty();
+        $object1 = new \stdClass();
+        $object1->property = self::VALUE;
+        $object2 = new \stdClass();
+        $object2->property = self::VALUE;
+        $object3 = new \stdClass();
+        $object3->property = self::OTHER;
         return [
-            'equal (value)' => [$optionalValue, self::VALUE, true],
-            'equal (optional)' => [$optionalValue, Optional::of(self::VALUE), true],
-            'equal (empty)' => [$optionalEmpty, Optional::empty(), true],
-            'not equal (value)' => [$optionalValue, self::OTHER, false],
-            'not equal (optional)' => [$optionalValue, Optional::of(self::OTHER), false],
-            'not equal (empty-present)' => [$optionalEmpty, $optionalValue, false],
-            'not equal (present-empty)' => [$optionalValue, $optionalEmpty, false],
+            'equal (value)' => [Optional::of(self::VALUE), self::VALUE, true],
+            'equal (optional)' => [Optional::of(self::VALUE), Optional::of(self::VALUE), true],
+            'equal (object)' => [Optional::of($object1), $object2, true],
+            'equal (optional<object>)' => [Optional::of($object1), Optional::of($object2), true],
+            'equal (empty)' => [Optional::empty(), Optional::empty(), true],
+            'not equal (value)' => [Optional::of(self::VALUE), self::OTHER, false],
+            'not equal (optional)' => [Optional::of(self::VALUE), Optional::of(self::OTHER), false],
+            'not equal (object)' => [Optional::of($object1), $object3, false],
+            'not equal (optional<object>)' => [Optional::of($object1), Optional::of($object3), false],
+            'not equal (empty-present)' => [Optional::empty(), Optional::of(self::VALUE), false],
+            'not equal (present-empty)' => [Optional::of(self::VALUE), Optional::empty(), false],
         ];
     }
 

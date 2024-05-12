@@ -12,7 +12,7 @@ use Throwable;
  *
  * @see https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html
  */
-final class Optional
+class Optional
 {
     private bool|null $wasPresent = null;
 
@@ -21,45 +21,41 @@ final class Optional
      *
      * @param T|null $value
      */
-    public function __construct(
-        private readonly mixed $value,
+    final public function __construct(
+        protected readonly mixed $value,
     ) {
+        if ($this->value !== null && !static::isSupported($this->value)) {
+            throw new InvalidArgumentException('Value is not supported.');
+        }
     }
 
-    /**
-     * @return self<T>
-     */
-    public static function empty(): self
+    public static function empty(): static
     {
-        return self::ofNullable(null);
+        return new static(null);
     }
 
     /**
      * @param T $value
-     *
-     * @return self<T>
      */
-    public static function of(mixed $value): self
+    public static function of(mixed $value): static
     {
-        return $value !== null ? self::ofNullable($value) : throw new InvalidArgumentException('Value must not be null.');
+        return $value !== null ? new static($value) : throw new InvalidArgumentException('Value must not be null.');
     }
 
     /**
      * @param T|null $value
-     *
-     * @return self<T>
      */
-    public static function ofNullable(mixed $value): self
+    public static function ofNullable(mixed $value): static
     {
-        return new self($value);
+        return new static($value);
     }
 
     public function equals(mixed $obj): bool
     {
-        if ($obj instanceof Optional) {
+        if ($obj instanceof static) {
             $obj = $obj->isPresent() ? $obj->get() : null;
         }
-        return $this->value === $obj;
+        return ($obj === null || static::isSupported($obj)) && $this->value == $obj;
     }
 
     /**
@@ -113,7 +109,8 @@ final class Optional
         if ($this->value !== null) {
             return $this->value;
         }
-        return $otherSupplier() ?? throw new InvalidArgumentException('Other supplier must return value.');
+        $other = $otherSupplier();
+        return static::isSupported($other) ? $other : throw new InvalidArgumentException('Other supplier must return supported other.');
     }
 
     /**
@@ -135,5 +132,17 @@ final class Optional
             }
             throw new InvalidArgumentException('Exception supplier must return ' . Throwable::class . '.');
         });
+    }
+
+    /**
+     * @param T|mixed $value not null
+     */
+    protected static function isSupported(mixed $value): bool
+    {
+        trigger_error(
+            static::class . ' does not check the type of value.',
+            error_level: E_USER_NOTICE,
+        );
+        return $value !== null;
     }
 }
