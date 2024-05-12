@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PetrKnap\Optional;
 
-use LogicException;
+use InvalidArgumentException;
 use Throwable;
 
 /**
@@ -41,7 +41,7 @@ final class Optional
      */
     public static function of(mixed $value): self
     {
-        return $value !== null ? self::ofNullable($value) : throw new LogicException('Value must not be null.');
+        return $value !== null ? self::ofNullable($value) : throw new InvalidArgumentException('Value must not be null.');
     }
 
     /**
@@ -70,7 +70,10 @@ final class Optional
     public function get(): mixed
     {
         if ($this->wasPresent === null) {
-            throw new LogicException('Call `isPresent()` before accessing the value.');
+            trigger_error(
+                'Call `isPresent()` before accessing the value.',
+                error_level: E_USER_NOTICE,
+            );
         }
         return $this->orElseThrow(static fn (): Exception\NoSuchElement => new Exception\NoSuchElement());
     }
@@ -107,7 +110,10 @@ final class Optional
      */
     public function orElseGet(callable $otherSupplier): mixed
     {
-        return $this->value ?? $otherSupplier();
+        if ($this->value !== null) {
+            return $this->value;
+        }
+        return $otherSupplier() ?? throw new InvalidArgumentException('Other supplier must return value.');
     }
 
     /**
@@ -122,7 +128,12 @@ final class Optional
     public function orElseThrow(callable $exceptionSupplier): mixed
     {
         return $this->orElseGet(static function () use ($exceptionSupplier): never {
-            throw $exceptionSupplier();
+            /** @var Throwable|mixed $exception */
+            $exception = $exceptionSupplier();
+            if ($exception instanceof Throwable) {
+                throw $exception;
+            }
+            throw new InvalidArgumentException('Exception supplier must return ' . Throwable::class . '.');
         });
     }
 }

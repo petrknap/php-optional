@@ -68,29 +68,21 @@ class OptionalTest extends TestCase
         ];
     }
 
-    public function testMethodGetReturnsValueWhenValueIsPresent(): void
+    #[DataProvider('dataMethodGetWorks')]
+    public function testMethodGetWorks(Optional $optional, ?string $expectedValue, ?string $expectedException): void
     {
-        $optional = Optional::of(self::VALUE);
-
-        self::assertTrue($optional->isPresent());
-        self::assertSame(self::VALUE, $optional->get());
+        if ($expectedException !== null) {
+            self::expectException($expectedException);
+        }
+        self::assertSame($expectedValue, $optional->get());
     }
 
-    public function testMethodGetThrowsWhenValueIsNotPresent(): void
+    public static function dataMethodGetWorks(): array
     {
-        $optional = Optional::empty();
-
-        self::assertFalse($optional->isPresent());
-        self::expectException(Exception\NoSuchElement::class);
-        $optional->get();
-    }
-
-    public function testMethodGetThrowsWhenCalledSeparately(): void
-    {
-        $optional = Optional::of(self::VALUE);
-
-        self::expectException(LogicException::class);
-        $optional->get();
+        return self::makeDataSet([
+            [self::VALUE, null],
+            [null, Exception\NoSuchElement::class],
+        ]);
     }
 
     #[DataProvider('dataMethodIfPresentWorks')]
