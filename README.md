@@ -28,6 +28,9 @@ $optionalString->ifPresent(function (string $value): void { echo $value; });
 if ($optionalString->equals('value')) {
     echo 'It is `value`.';
 }
+
+echo $optionalString->map(fn ($s) => "`{$s}`")->orElse('empty');
+echo $optionalString->flatMap(fn ($s) => OptionalString::of("`{$s}`"))->orElse('empty');
 ```
 
 ### Create and use your own typed optional

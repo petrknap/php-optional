@@ -76,6 +76,20 @@ class OptionalTest extends TestCase
         ];
     }
 
+    #[DataProvider('dataMethodFlatMapWorks')]
+    public function testMethodFlatMapWorks(Optional $optional, Optional $expectedResult): void
+    {
+        self::assertTrue($expectedResult->equals($optional->flatMap(fn (string $v): Optional => Optional::of($v . 'x'))));
+    }
+
+    public static function dataMethodFlatMapWorks(): array
+    {
+        return self::makeDataSet([
+            [Optional::of(self::VALUE . 'x')],
+            [Optional::empty()],
+        ]);
+    }
+
     #[DataProvider('dataMethodGetWorks')]
     public function testMethodGetWorks(Optional $optional, ?string $expectedValue, ?string $expectedException): void
     {
@@ -124,6 +138,20 @@ class OptionalTest extends TestCase
         return self::makeDataSet([
             [true],
             [false],
+        ]);
+    }
+
+    #[DataProvider('dataMethodMapWorks')]
+    public function testMethodMapWorks(Optional $optional, mixed $expectedResult): void
+    {
+        self::assertTrue($expectedResult->equals($optional->map(fn (string $v): string => $v . 'x')));
+    }
+
+    public static function dataMethodMapWorks(): array
+    {
+        return self::makeDataSet([
+            [OptionalString::of(self::VALUE . 'x')],
+            [Optional::empty()],
         ]);
     }
 
