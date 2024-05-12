@@ -14,8 +14,7 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 namespace PetrKnap\Optional;
 
-/** @var Optinal<string> $optionalString */
-$optionalString = Optional::of('value');
+$optionalString = OptionalString::of('value');
 
 echo $optionalString->isPresent() ? $optionalString->get() : 'empty';
 echo $optionalString->orElse('empty');
