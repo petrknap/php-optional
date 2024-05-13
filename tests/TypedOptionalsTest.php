@@ -21,6 +21,7 @@ class TypedOptionalsTest extends TestCase
         self::assertInstanceOf($optionalClassName, $optionalClassName::of($value));
         self::assertInstanceOf($optionalClassName, $optionalClassName::ofNullable($value));
         self::assertInstanceOf($optionalClassName, $optionalClassName::ofNullable(null));
+        self::assertInstanceOf($optionalClassName, TypedOptional::of($value));
     }
 
     public static function dataCouldBeCreated(): array
