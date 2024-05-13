@@ -11,6 +11,8 @@
 
 It is an easy way to make sure that everyone has to check if they have (not) received a `null`.
 
+## Examples
+
 ```php
 namespace PetrKnap\Optional;
 
@@ -25,6 +27,36 @@ $optionalString->ifPresent(function (string $value): void { echo $value; });
 
 if ($optionalString->equals('value')) {
     echo 'It is `value`.';
+}
+```
+
+### Create and use your own typed optional
+
+```php
+namespace PetrKnap\Optional;
+
+class YourClass {}
+
+/**
+ * @template-extends OptionalObject<YourClass>
+ */
+class YourOptional extends OptionalObject {
+    protected static function getObjectClassName(): string {
+        return YourClass::class;
+    }
+}
+TypedOptional::register(YourOptional::class); // optional recommended step
+
+function your_strong_typed_function(YourOptional $input): YourOptional {
+    return YourOptional::empty();
+}
+
+/**
+ * @param Optional<YourClass> $input
+ * @return Optional<YourClass>
+ */
+function your_weak_typed_function(Optional $input): Optional {
+    return YourOptional::empty();
 }
 ```
 
