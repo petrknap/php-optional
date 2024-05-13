@@ -8,9 +8,9 @@ namespace PetrKnap\Optional;
  * @template K of array-key
  * @template V of mixed
  *
- * @template-extends AbstractOptional<array<K, V>>
+ * @template-extends Optional<array<K, V>>
  */
-final class OptionalArray extends AbstractOptional
+final class OptionalArray extends Optional
 {
     protected static function isSupported(mixed $value): bool
     {

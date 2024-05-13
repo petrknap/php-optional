@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * @template-extends AbstractOptional<bool>
+ * @template-extends Optional<bool>
  */
-final class OptionalBool extends AbstractOptional
+final class OptionalBool extends Optional
 {
     protected static function isSupported(mixed $value): bool
     {

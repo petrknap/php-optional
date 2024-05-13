@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PetrKnap\Optional\OptionalResource;
 
-use PetrKnap\Optional\AbstractOptionalResource;
+use PetrKnap\Optional\OptionalResource;
 
-final class OptionalStream extends AbstractOptionalResource
+final class OptionalStream extends OptionalResource
 {
     protected static function getResourceType(): string
     {
