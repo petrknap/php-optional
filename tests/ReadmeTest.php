@@ -27,6 +27,8 @@ class ReadmeTest extends TestCase implements MarkdownFileTestInterface
                 . 'value'
                 . 'value'
                 . 'It is `value`.'
+                . '`value`'
+                . '`value`'
             ,
             'create--and-use-your-own-typed-optional' => '',
         ];

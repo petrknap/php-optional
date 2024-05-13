@@ -64,6 +64,25 @@ abstract class AbstractOptional
     }
 
     /**
+     * @template U of mixed
+     *
+     * @param callable(T): self<U> $mapper
+     *
+     * @return self<U>
+     */
+    public function flatMap(callable $mapper): self
+    {
+        if ($this->value !== null) {
+            $mapped = $mapper($this->value);
+            if (!$mapped instanceof self) {
+                throw new InvalidArgumentException('Mapper must return instance of ' . self::class . '.');
+            }
+            return $mapped;
+        }
+        return $this;
+    }
+
+    /**
      * @return T
      *
      * @throws Exception\NoSuchElement
@@ -92,6 +111,27 @@ abstract class AbstractOptional
     public function isPresent(): bool
     {
         return $this->wasPresent = $this->value !== null;
+    }
+
+    /**
+     * @template U of mixed
+     *
+     * @param callable(T): U $mapper
+     *
+     * @return self<U>
+     */
+    public function map(callable $mapper): self
+    {
+        /** @var callable(T): self<U> $flatMapper */
+        $flatMapper = static function (mixed $value) use ($mapper): self {
+            $mapped = $mapper($value);
+            try {
+                return TypedOptional::of($mapped);
+            } catch (Exception\CouldNotFindTypedOptionalForValue) {
+                return Optional::of($mapped);
+            }
+        };
+        return $this->flatMap($flatMapper);
     }
 
     /**
@@ -140,7 +180,7 @@ abstract class AbstractOptional
     }
 
     /**
-     * @param T|mixed $value not null
+     * @param mixed $value not null
      */
     abstract protected static function isSupported(mixed $value): bool;
 }
