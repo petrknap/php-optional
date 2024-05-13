@@ -1,31 +1,26 @@
 <?php
 
+/**
+ * Please use subclass of {@see Optional} if possible.
+ */
+
 declare(strict_types=1);
 
 namespace PetrKnap\Optional;
 
-use InvalidArgumentException;
-use Throwable;
-
 /**
- * Please use another implementation of {@see AbstractOptional} if possible.
- *
- * @todo make it final
- *
- * @deprecated will be converted to final
- *
  * @template T of mixed
  *
  * @template-extends AbstractOptional<T>
  */
-class Optional extends AbstractOptional
+/* abstract */ class Optional extends AbstractOptional
 {
-    protected static function isSupported(mixed $value): bool
+    /* abstract */ protected static function isSupported(mixed $value): bool
     {
         trigger_error(
             static::class . ' does not check the type of value.',
             error_level: E_USER_NOTICE,
         );
-        return $value !== null;
+        return true;
     }
 }

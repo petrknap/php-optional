@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PetrKnap\Optional\OptionalObject;
 
-use PetrKnap\Optional\AbstractOptionalObject;
+use PetrKnap\Optional\OptionalObject;
 use stdClass;
 
 /**
- * @template-extends AbstractOptionalObject<stdClass>
+ * @template-extends OptionalObject<stdClass>
  */
-final class OptionalStdClass extends AbstractOptionalObject
+final class OptionalStdClass extends OptionalObject
 {
     protected static function getObjectClassName(): string
     {

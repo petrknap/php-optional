@@ -1,31 +1,27 @@
 <?php
 
+/**
+ * Please use subclass of {@see OptionalObject} if possible.
+ */
+
 declare(strict_types=1);
 
 namespace PetrKnap\Optional;
 
-use PetrKnap\Shorts\Exception\NotImplemented;
-
 /**
- * Please use another implementation of {@see AbstractOptionalObject} if possible.
- *
  * @template T of object
  *
  * @template-extends AbstractOptionalObject<object>
  */
-final class OptionalObject extends AbstractOptionalObject
+/* abstract */ class OptionalObject extends AbstractOptionalObject
 {
-    protected static function isSupported(mixed $value): bool
+    /* abstract */ protected static function getObjectClassName(): string
     {
         trigger_error(
-            self::class . ' does not check the instance of object.',
+            static::class . ' does not check the instance of object.',
             error_level: E_USER_NOTICE,
         );
-        return is_object($value);
-    }
-
-    protected static function getObjectClassName(): string
-    {
-        NotImplemented::throw(__METHOD__);
+        /** @var class-string */
+        return '';
     }
 }

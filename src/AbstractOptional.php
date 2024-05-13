@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use Throwable;
 
 /**
+ * @deprecated use {@see Optional}
+ *
+ * @todo merge it with {@see Optional}
  * @todo make constructor protected
  *
  * @template T of mixed type of non-null value
