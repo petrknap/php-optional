@@ -76,6 +76,23 @@ class OptionalTest extends TestCase
         ];
     }
 
+    #[DataProvider('dataMethodFilterWorks')]
+    public function testMethodFilterWorks(Optional $optional, bool $expected): void
+    {
+        self::assertEquals(
+            $expected ? $optional : Optional::empty(),
+            $optional->filter(static fn (string $value): bool => $value === self::VALUE),
+        );
+    }
+
+    public static function dataMethodFilterWorks(): array
+    {
+        return [
+            self::VALUE => [Optional::of(self::VALUE), true],
+            self::OTHER => [Optional::of(self::OTHER), false],
+        ];
+    }
+
     #[DataProvider('dataMethodFlatMapWorks')]
     public function testMethodFlatMapWorks(Optional $optional, Optional $expectedResult): void
     {
