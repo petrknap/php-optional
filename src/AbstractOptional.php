@@ -64,6 +64,25 @@ abstract class AbstractOptional
     }
 
     /**
+     * @param callable(T): bool $predicate
+     *
+     * @return static
+     */
+    public function filter(callable $predicate): static
+    {
+        if ($this->value !== null) {
+            $matches = $predicate($this->value);
+            if (!is_bool($matches)) {
+                throw new InvalidArgumentException('Predicate must return boolean.');
+            }
+            if (!$matches) {
+                return static::empty();
+            }
+        }
+        return $this;
+    }
+
+    /**
      * @template U of mixed
      *
      * @param callable(T): self<U> $mapper
