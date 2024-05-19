@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * @template-extends Optional<float>
+ * @extends Optional<float>
  */
 final class OptionalFloat extends Optional
 {

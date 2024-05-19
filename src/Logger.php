@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @internal
  */
-trait LoggerTrait
+trait Logger
 {
     private static ?LoggerInterface $logger = null;
 
@@ -18,6 +18,9 @@ trait LoggerTrait
         self::$logger = $logger;
     }
 
+    /**
+     * @todo add file and line into context
+     */
     protected static function logNotice(string $message): void
     {
         if (self::$logger === null) {

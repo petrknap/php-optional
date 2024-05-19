@@ -8,11 +8,11 @@ use PetrKnap\Optional\OptionalObject;
 use stdClass;
 
 /**
- * @template-extends OptionalObject<stdClass>
+ * @extends OptionalObject<stdClass>
  */
 final class OptionalStdClass extends OptionalObject
 {
-    protected static function getObjectClassName(): string
+    protected static function getInstanceOf(): string
     {
         return stdClass::class;
     }

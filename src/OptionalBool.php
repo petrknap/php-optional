@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * @template-extends Optional<bool>
+ * @extends Optional<bool>
  */
 final class OptionalBool extends Optional
 {

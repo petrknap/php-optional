@@ -8,7 +8,7 @@ use PetrKnap\Shorts\PhpUnit\MarkdownFileTestInterface;
 use PetrKnap\Shorts\PhpUnit\MarkdownFileTestTrait;
 use PHPUnit\Framework\TestCase;
 
-class ReadmeTest extends TestCase implements MarkdownFileTestInterface
+final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
 {
     use MarkdownFileTestTrait;
 
@@ -30,7 +30,7 @@ class ReadmeTest extends TestCase implements MarkdownFileTestInterface
                 . '`value`'
                 . '`value`'
             ,
-            'create--and-use-your-own-typed-optional' => '',
+            'create-and-use-your-own-typed-optional' => '',
         ];
     }
 }

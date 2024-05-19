@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class TypedOptionalsTest extends TestCase
+final class TypedOptionalsTest extends TestCase
 {
     /**
      * @param class-string<Optional> $optionalClassName
