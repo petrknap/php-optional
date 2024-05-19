@@ -12,10 +12,7 @@ namespace PetrKnap\Optional;
 {
     /* abstract */ protected static function getResourceType(): string
     {
-        trigger_error(
-            static::class . ' does not check the type of resource.',
-            error_level: E_USER_NOTICE,
-        );
+        self::logNotice(static::class . ' does not check the type of resource.');
         /** @var non-empty-string */
         return '';
     }

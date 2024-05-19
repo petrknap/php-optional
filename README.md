@@ -16,6 +16,8 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 namespace PetrKnap\Optional;
 
+Optional::setLogger(new \Psr\Log\NullLogger());
+
 $optionalString = OptionalString::of('value');
 
 echo $optionalString->isPresent() ? $optionalString->get() : 'empty';

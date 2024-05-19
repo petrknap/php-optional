@@ -19,6 +19,8 @@ use Throwable;
  */
 abstract class AbstractOptional
 {
+    use LoggerTrait;
+
     private bool|null $wasPresent = null;
 
     /**
@@ -109,10 +111,7 @@ abstract class AbstractOptional
     public function get(): mixed
     {
         if ($this->wasPresent === null) {
-            trigger_error(
-                'Call `isPresent()` before accessing the value.',
-                error_level: E_USER_NOTICE,
-            );
+            self::logNotice('Call `isPresent()` before accessing the value.');
         }
         return $this->orElseThrow(static fn (): Exception\NoSuchElement => new Exception\NoSuchElement());
     }

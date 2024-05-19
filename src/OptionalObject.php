@@ -17,10 +17,7 @@ namespace PetrKnap\Optional;
 {
     /* abstract */ protected static function getObjectClassName(): string
     {
-        trigger_error(
-            static::class . ' does not check the instance of object.',
-            error_level: E_USER_NOTICE,
-        );
+        self::logNotice(static::class . ' does not check the instance of object.');
         /** @var class-string */
         return '';
     }

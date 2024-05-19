@@ -8,11 +8,18 @@ use Exception as SomeException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class OptionalTest extends TestCase
 {
     private const VALUE = 'value';
     private const OTHER = 'other';
+
+    public static function setUpBeforeClass(): void
+    {
+        Optional::setLogger(new NullLogger());
+        parent::setUpBeforeClass();
+    }
 
     public function testMethodEmptyReturnsEmptyOptional(): void
     {
