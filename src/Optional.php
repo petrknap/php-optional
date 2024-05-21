@@ -17,10 +17,7 @@ namespace PetrKnap\Optional;
 {
     /* abstract */ protected static function isSupported(mixed $value): bool
     {
-        trigger_error(
-            static::class . ' does not check the type of value.',
-            error_level: E_USER_NOTICE,
-        );
+        self::logNotice(static::class . ' does not check the type of value.');
         return true;
     }
 }
