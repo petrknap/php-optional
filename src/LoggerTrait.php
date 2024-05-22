@@ -6,6 +6,9 @@ namespace PetrKnap\Optional;
 
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 trait LoggerTrait
 {
     private static ?LoggerInterface $logger = null;
