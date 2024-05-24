@@ -8,18 +8,11 @@ use Exception as SomeException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 
-class OptionalTest extends TestCase
+final class OptionalTest extends TestCase
 {
     private const VALUE = 'value';
     private const OTHER = 'other';
-
-    public static function setUpBeforeClass(): void
-    {
-        Optional::setLogger(new NullLogger());
-        parent::setUpBeforeClass();
-    }
 
     public function testMethodEmptyReturnsEmptyOptional(): void
     {
@@ -87,7 +80,7 @@ class OptionalTest extends TestCase
     public function testMethodFilterWorks(Optional $optional, bool $expected): void
     {
         self::assertEquals(
-            $expected ? $optional : Optional::empty(),
+            $expected ? $optional : $optional::empty(),
             $optional->filter(static fn (string $value): bool => $value === self::VALUE),
         );
     }
@@ -127,7 +120,7 @@ class OptionalTest extends TestCase
     {
         return self::makeDataSet([
             [self::VALUE, null],
-            [null, Exception\NoSuchElement::class],
+            [null, JavaSe8\NoSuchElementException::class],
         ]);
     }
 

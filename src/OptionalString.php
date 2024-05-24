@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * @template-extends Optional<string>
+ * @extends Optional<string>
  */
 final class OptionalString extends Optional
 {

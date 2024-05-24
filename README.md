@@ -16,9 +16,7 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 namespace PetrKnap\Optional;
 
-Optional::setLogger(new \Psr\Log\NullLogger());
-
-$optionalString = OptionalString::of('value');
+$optionalString = Optional::of('value');
 
 echo $optionalString->isPresent() ? $optionalString->get() : 'empty';
 echo $optionalString->orElse('empty');
@@ -32,7 +30,7 @@ if ($optionalString->equals('value')) {
 }
 
 echo $optionalString->map(fn ($s) => "`{$s}`")->orElse('empty');
-echo $optionalString->flatMap(fn ($s) => OptionalString::of("`{$s}`"))->orElse('empty');
+echo $optionalString->flatMap(fn ($s) => Optional::of("`{$s}`"))->orElse('empty');
 ```
 
 ### Create and use your own typed optional
@@ -46,7 +44,7 @@ class YourClass {}
  * @template-extends OptionalObject<YourClass>
  */
 class YourOptional extends OptionalObject {
-    protected static function getObjectClassName(): string {
+    protected static function getInstanceOf(): string {
         return YourClass::class;
     }
 }

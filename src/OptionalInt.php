@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * @template-extends Optional<int>
+ * @extends Optional<int>
  */
 final class OptionalInt extends Optional
 {

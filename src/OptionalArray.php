@@ -8,7 +8,7 @@ namespace PetrKnap\Optional;
  * @template K of array-key
  * @template V of mixed
  *
- * @template-extends Optional<array<K, V>>
+ * @extends Optional<array<K, V>>
  */
 final class OptionalArray extends Optional
 {

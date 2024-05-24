@@ -6,6 +6,9 @@ namespace PetrKnap\Optional;
 
 use InvalidArgumentException;
 
+/**
+ * @internal use {@see Optional}
+ */
 final class TypedOptional
 {
     /** @var array<class-string> must be iterated in reverse order */
@@ -22,7 +25,7 @@ final class TypedOptional
     ];
 
     /**
-     * @template T of mixed
+     * @template T of mixed type of non-null value
      *
      * @param T $value
      *
