@@ -33,6 +33,18 @@ final class OptionalTest extends TestCase
         Optional::of(null);
     }
 
+    public function testMethodOfFalsableWorks(): void
+    {
+        self::assertEquals(
+            Optional::ofNullable(null),
+            Optional::ofFalsable(false),
+        );
+        self::assertEquals(
+            Optional::ofNullable(self::VALUE),
+            Optional::ofFalsable(self::VALUE),
+        );
+    }
+
     #[DataProvider('dataMethodOfNullableWorks')]
     public function testMethodOfNullableWorks(Optional $expectedOptional, mixed $value): void
     {
