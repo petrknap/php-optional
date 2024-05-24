@@ -21,7 +21,7 @@ $optionalString = Optional::of('value');
 echo $optionalString->isPresent() ? $optionalString->get() : 'empty';
 echo $optionalString->orElse('empty');
 echo $optionalString->orElseGet(fn () => 'empty');
-echo $optionalString->orElseThrow(fn () => new \Exception());
+echo $optionalString->orElseThrow();
 
 $optionalString->ifPresent(function (string $value): void { echo $value; });
 

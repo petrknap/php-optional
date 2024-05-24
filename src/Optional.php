@@ -100,7 +100,7 @@ abstract class Optional implements JavaSe8\Optional
         if ($this->wasPresent === null) {
             self::logNotice('Call `isPresent()` before accessing the value.');
         }
-        return $this->orElseThrow(static fn (): Exception\CouldNotGetValueOfEmptyOptional => new Exception\CouldNotGetValueOfEmptyOptional()); // @todo use default supplier
+        return $this->orElseThrow();
     }
 
     public function ifPresent(callable $consumer): void
@@ -140,14 +140,11 @@ abstract class Optional implements JavaSe8\Optional
         return static::isSupported($other) ? $other : throw new InvalidArgumentException('Other supplier must return supported other.');
     }
 
-    /**
-     * @todo make supplier nullable
-     */
-    public function orElseThrow(callable $exceptionSupplier): mixed
+    public function orElseThrow(?callable $exceptionSupplier = null): mixed
     {
         return $this->orElseGet(static function () use ($exceptionSupplier): never {
             /** @var Throwable|mixed $exception */
-            $exception = $exceptionSupplier();
+            $exception = $exceptionSupplier === null ? new Exception\CouldNotGetValueOfEmptyOptional() : $exceptionSupplier();
             if ($exception instanceof Throwable) {
                 throw $exception;
             }
