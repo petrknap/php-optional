@@ -41,7 +41,7 @@ namespace PetrKnap\Optional;
 class YourClass {}
 
 /**
- * @template-extends OptionalObject<YourClass>
+ * @extends OptionalObject<YourClass>
  */
 class YourOptional extends OptionalObject {
     protected static function getInstanceOf(): string {
