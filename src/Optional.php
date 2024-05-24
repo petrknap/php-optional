@@ -45,18 +45,20 @@ abstract class Optional implements JavaSe8\Optional
     public static function ofNullable(mixed $value): static
     {
         if (static::class === Optional::class) {
-            try {
-                /** @var static */
-                return TypedOptional::of($value);
-            } catch (Exception\CouldNotFindTypedOptionalForValue) {
-                return new class ($value) extends Optional {  # @phpstan-ignore-line
-                    protected static function isSupported(mixed $value): bool
-                    {
-                        self::logNotice(Optional::class . ' does not check the type of value.');
-                        return true;
-                    }
-                };
+            if ($value !== null) {
+                try {
+                    /** @var static */
+                    return TypedOptional::of($value, Optional::class);
+                } catch (Exception\CouldNotFindTypedOptionalForValue) {
+                }
             }
+            return new class ($value) extends Optional {  # @phpstan-ignore-line
+                protected static function isSupported(mixed $value): bool
+                {
+                    self::logNotice(Optional::class . ' does not check the type of value.');
+                    return true;
+                }
+            };
         }
         return new static($value);
     }
