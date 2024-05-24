@@ -13,11 +13,19 @@ use stdClass;
 
 final class OptionalObjectTest extends TestCase
 {
-    public function testOptionalObjectIsOptionalObject(): void
+    public function testIsCorrectType(): void
     {
         self::assertInstanceOf(
             OptionalObject::class,
             OptionalObject::empty(),
+        );
+    }
+
+    public function testUsesCorrectType()
+    {
+        self::assertInstanceOf(
+            OptionalObject\OptionalStdClass::class,
+            OptionalObject::of(new stdClass()),
         );
     }
 

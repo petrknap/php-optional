@@ -15,6 +15,13 @@ abstract class OptionalResource extends Optional
     public static function ofNullable(mixed $value): static
     {
         if (static::class === OptionalResource::class) {
+            if ($value !== null) {
+                try {
+                    /** @var static */
+                    return TypedOptional::of($value, OptionalResource::class);
+                } catch (Exception\CouldNotFindTypedOptionalForValue) {
+                }
+            }
             return new class ($value) extends OptionalResource {  # @phpstan-ignore-line
                 protected static function getResourceType(): string
                 {

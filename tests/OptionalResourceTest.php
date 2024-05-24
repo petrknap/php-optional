@@ -10,11 +10,19 @@ use stdClass;
 
 final class OptionalResourceTest extends TestCase
 {
-    public function testOptionalResourceIsOptionalResource(): void
+    public function testIsCorrectType(): void
     {
         self::assertInstanceOf(
             OptionalResource::class,
             OptionalResource::empty(),
+        );
+    }
+
+    public function testUsesCorrectType()
+    {
+        self::assertInstanceOf(
+            OptionalResource\OptionalStream::class,
+            OptionalResource::of(tmpfile()),
         );
     }
 }

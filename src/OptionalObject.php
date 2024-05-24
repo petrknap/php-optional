@@ -17,6 +17,13 @@ abstract class OptionalObject extends Optional
     public static function ofNullable(mixed $value): static
     {
         if (static::class === OptionalObject::class) {
+            if ($value !== null) {
+                try {
+                    /** @var static */
+                    return TypedOptional::of($value, OptionalObject::class);
+                } catch (Exception\CouldNotFindTypedOptionalForValue) {
+                }
+            }
             return new class ($value) extends OptionalObject {  # @phpstan-ignore-line
                 protected static function getInstanceOf(): string
                 {

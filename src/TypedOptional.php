@@ -6,9 +6,6 @@ namespace PetrKnap\Optional;
 
 use InvalidArgumentException;
 
-/**
- * @internal use {@see Optional}
- */
 final class TypedOptional
 {
     /** @var array<class-string> must be iterated in reverse order */
@@ -25,18 +22,24 @@ final class TypedOptional
     ];
 
     /**
+     * @internal use {@see Optional::of()}
+     *
      * @template T of mixed type of non-null value
      *
      * @param T $value
+     * @param class-string $subclassOf
      *
      * @return Optional<T>
      *
      * @throws Exception\CouldNotFindTypedOptionalForValue
      */
-    public static function of(mixed $value): Optional
+    public static function of(mixed $value, string $subclassOf): Optional
     {
         /** @var class-string<Optional<T>> $typedOptional */
         foreach (array_reverse(self::$typedOptionals) as $typedOptional) {
+            if ($typedOptional === $subclassOf || !is_a($typedOptional, $subclassOf, allow_string: true)) {
+                continue;
+            }
             try {
                 return $typedOptional::of($value);
             } catch (InvalidArgumentException) {
