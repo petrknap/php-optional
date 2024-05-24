@@ -42,6 +42,19 @@ abstract class Optional implements JavaSe8\Optional
         return static::ofNullable($value);
     }
 
+    /**
+     * Many PHP functions return `false` on failure, this is a factory for them.
+     *
+     * @param T|false $value
+     */
+    public static function ofFalsable(mixed $value): static
+    {
+        if ($value === false) {
+            return static::empty();
+        }
+        return static::of($value);
+    }
+
     public static function ofNullable(mixed $value): static
     {
         if (static::class === Optional::class) {
