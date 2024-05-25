@@ -27,7 +27,6 @@ abstract class OptionalObject extends Optional
             return new class ($value) extends OptionalObject {  # @phpstan-ignore-line
                 protected static function getInstanceOf(): string
                 {
-                    self::logNotice(OptionalObject::class . ' does not check the instance of object.');
                     /** @var class-string */
                     return self::ANY_INSTANCE_OF;
                 }
