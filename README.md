@@ -16,21 +16,16 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 namespace PetrKnap\Optional;
 
-$optionalString = Optional::of('value');
-
-echo $optionalString->isPresent() ? $optionalString->get() : 'empty';
-echo $optionalString->orElse('empty');
-echo $optionalString->orElseGet(fn () => 'empty');
-echo $optionalString->orElseThrow();
-
-$optionalString->ifPresent(function (string $value): void { echo $value; });
-
-if ($optionalString->equals('value')) {
-    echo 'It is `value`.';
+/** @var Optional<string> $optionalString */
+$optionalString = Optional::of('data');
+if ($optionalString->isPresent()) {
+    echo $optionalString->get();
 }
 
-echo $optionalString->map(fn ($s) => "`{$s}`")->orElse('empty');
-echo $optionalString->flatMap(fn ($s) => Optional::of("`{$s}`"))->orElse('empty');
+OptionalResource::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
+    fwrite($tmpFile, 'data');
+    fclose($tmpFile);
+});
 ```
 
 ### Create and use your own typed optional
