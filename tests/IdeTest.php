@@ -22,8 +22,8 @@ final class IdeTest extends TestCase
 
         $optional->filter(static fn (): bool => true)->orElseThrow()->tryIt();  # <--- HERE
 
-        Optional::empty()->flatMap(fn (): IdeTestOptional => IdeTestOptional::of($this))->orElseThrow()->tryIt();  # <--- HERE @todo fix it
-        Optional::empty()->map(fn (): IdeTest => $this)->orElseThrow()->tryIt();  # <--- HERE @todo fix it
+        Optional::of(0)->flatMap(fn (): IdeTestOptional => IdeTestOptional::of($this))->orElseThrow()->tryIt();  # <--- HERE @todo fix it
+        Optional::of(0)->map(fn (): IdeTest => $this)->orElseThrow()->tryIt();  # <--- HERE @todo fix it
 
         self::markTestSkipped('Try placing the cursor over each `tryIt` call.');
     }
