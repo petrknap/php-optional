@@ -35,11 +35,11 @@ final class TypedOptionalsTest extends TestCase
             // Non-scalars
             'array' => [OptionalArray::class, []],
             'object' => [OptionalObject::class, new stdClass(), ['object(stdClass)']],
-            'resource' => [OptionalResource::class, fopen('php://memory', 'rw'), ['resource(stream)']],
+            'resource' => [OptionalResource::class, tmpfile(), ['resource(stream)']],
             // Objects
             'object(stdClass)' => [OptionalObject\OptionalStdClass::class, new stdClass(), ['object']],
             // Resources
-            'resource(stream)' => [OptionalResource\OptionalStream::class, fopen('php://memory', 'rw'), ['resource']],
+            'resource(stream)' => [OptionalResource\OptionalStream::class, tmpfile(), ['resource']],
         ];
     }
 

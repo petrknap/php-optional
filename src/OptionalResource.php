@@ -25,6 +25,7 @@ abstract class OptionalResource extends Optional
             return new class ($value) extends OptionalResource {  # @phpstan-ignore-line
                 protected static function getResourceType(): string
                 {
+                    self::logNotice(OptionalResource::class . ' does not check the type of resource.');
                     /** @var non-empty-string */
                     return self::ANY_RESOURCE_TYPE;
                 }
