@@ -8,18 +8,22 @@ use Psr\Log\LoggerInterface;
 
 /**
  * @internal
+ * @deprecated will be removed
  */
 trait Logger
 {
     private static ?LoggerInterface $logger = null;
 
+    /**
+     * @deprecated will be removed
+     */
     public static function setLogger(LoggerInterface $logger): void
     {
         self::$logger = $logger;
     }
 
     /**
-     * @todo add file and line into context
+     * @deprecated will be removed
      */
     protected static function logNotice(string $message): void
     {
