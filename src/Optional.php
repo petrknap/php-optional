@@ -14,8 +14,6 @@ use Throwable;
  */
 abstract class Optional implements JavaSe8\Optional
 {
-    use Logger;
-
     private bool|null $wasPresent = null;
 
     /**
@@ -24,7 +22,7 @@ abstract class Optional implements JavaSe8\Optional
     final protected function __construct(
         protected readonly mixed $value,
     ) {
-        if ($this->value !== null && !static::isSupported($this->value)) {
+        if ($this->value !== null && !@static::isSupported($this->value)) {
             throw new InvalidArgumentException('Value is not supported.');
         }
     }
@@ -68,7 +66,7 @@ abstract class Optional implements JavaSe8\Optional
             return new class ($value) extends Optional {  # @phpstan-ignore-line
                 protected static function isSupported(mixed $value): bool
                 {
-                    self::logNotice(Optional::class . ' does not check the type of value.');
+                    TypedOptional::triggerNotice(Optional::class . ' does not check the type of value.');
                     return true;
                 }
             };
@@ -113,7 +111,7 @@ abstract class Optional implements JavaSe8\Optional
     public function get(): mixed
     {
         if ($this->wasPresent === null) {
-            self::logNotice('Call `isPresent()` before accessing the value.');
+            self::triggerNotice('Call `isPresent()` before accessing the value.');
         }
         return $this->orElseThrow();
     }
@@ -171,4 +169,15 @@ abstract class Optional implements JavaSe8\Optional
      * @param mixed $value not null
      */
     abstract protected static function isSupported(mixed $value): bool;
+
+    /**
+     * @internal you should use {@see TypedOptional::triggerNotice()}
+     */
+    private static function triggerNotice(string $message): void
+    {
+        trigger_error(
+            $message,
+            error_level: E_USER_NOTICE,
+        );
+    }
 }

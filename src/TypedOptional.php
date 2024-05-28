@@ -8,6 +8,8 @@ use InvalidArgumentException;
 
 final class TypedOptional
 {
+    private static bool|null $enabledErrorTriggering = null;
+
     /** @var array<class-string> must be iterated in reverse order */
     private static array $typedOptionals = [
         OptionalArray::class,
@@ -58,6 +60,29 @@ final class TypedOptional
         if (!is_a($typedOptionalClassName, Optional::class, allow_string: true)) {
             throw new Exception\CouldNotRegisterNonOptional($typedOptionalClassName);
         }
+        if (self::$enabledErrorTriggering === null) {
+            self::enableErrorTriggering();
+        }
         self::$typedOptionals[] = $typedOptionalClassName;
+    }
+
+    public static function enableErrorTriggering(): void
+    {
+        self::$enabledErrorTriggering = true;
+    }
+
+    public static function disableErrorTriggering(): void
+    {
+        self::$enabledErrorTriggering = false;
+    }
+
+    public static function triggerNotice(string $message): void
+    {
+        if (self::$enabledErrorTriggering === true) {
+            trigger_error(
+                $message,
+                error_level: E_USER_NOTICE,
+            );
+        }
     }
 }

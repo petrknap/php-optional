@@ -22,7 +22,24 @@ final class OptionalResourceTest extends TestCase
     {
         self::assertInstanceOf(
             OptionalResource\OptionalStream::class,
-            OptionalResource::of(tmpfile()),
+            OptionalResource::of(fopen('php://memory', 'rw')),
         );
+    }
+
+    public function testEqualResourcesAreEqual(): void
+    {
+        $r = fopen('php://memory', 'rw');
+        $a = OptionalResource::of($r);
+        $b = OptionalResource::of($r);
+
+        self::assertTrue($a->equals($b));
+    }
+
+    public function testDifferentResourcesAreNotEqual(): void
+    {
+        $a = OptionalResource::of(fopen('php://memory', 'rw'));
+        $b = OptionalResource::of(fopen('php://memory', 'rw'));
+
+        self::assertFalse($a->equals($b));
     }
 }
