@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PetrKnap\Optional;
 
-use Exception as SomeException;
+use DomainException as SomeException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -213,20 +213,34 @@ final class OptionalTest extends TestCase
     }
 
     #[DataProvider('dataMethodOrElseThrowWorks')]
-    public function testMethodOrElseThrowWorks(Optional $optional, ?string $expectedValue, ?string $expectedException): void
+    public function testMethodOrElseThrowWorks(Optional $optional, null|string|callable $exceptionProvider, ?string $expectedValue, ?string $expectedException): void
     {
         if ($expectedException) {
             self::expectException($expectedException);
         }
-        self::assertSame($expectedValue, $optional->orElseThrow(static fn(): SomeException => new SomeException()));
+        self::assertSame($expectedValue, $optional->orElseThrow($exceptionProvider));
     }
 
-    public static function dataMethodOrElseThrowWorks(): array
+    public static function dataMethodOrElseThrowWorks(): iterable
     {
-        return self::makeDataSet([
-            [self::VALUE, null],
-            [null, SomeException::class],
+        $dataSet = self::makeDataSet([
+            [null, self::VALUE, null],
+            [null, null, SomeException::class],
         ]);
+        foreach ($dataSet as $name => $data) {
+            $data[3] = $data[3] === null ? null : Exception\CouldNotGetValueOfEmptyOptional::class;
+            yield "{$name} + null supplier" => $data;
+        }
+        $exceptionSupplier = static fn(): SomeException => new SomeException();
+        foreach ($dataSet as $name => $data) {
+            $data[1] = $exceptionSupplier;
+            yield "{$name} + callable supplier" => $data;
+        }
+        $exceptionSupplier = SomeException::class;
+        foreach ($dataSet as $name => $data) {
+            $data[1] = $exceptionSupplier;
+            yield "{$name} + string supplier" => $data;
+        }
     }
 
     private static function makeDataSet(array $args): array

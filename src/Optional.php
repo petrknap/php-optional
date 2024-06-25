@@ -153,11 +153,32 @@ abstract class Optional implements JavaSe8\Optional
         return static::isSupported($other) ? $other : throw new InvalidArgumentException('Other supplier must return supported other.');
     }
 
-    public function orElseThrow(?callable $exceptionSupplier = null): mixed
+    /**
+     * @template E of Throwable
+     *
+     * @param null|class-string<E>|callable(): E $exceptionSupplier
+     *
+     * @return T
+     *
+     * @throws E
+     */
+    public function orElseThrow(null|string|callable $exceptionSupplier = null): mixed
     {
+        if ($exceptionSupplier === null) {
+            return $this->orElseThrow(static fn () => new Exception\CouldNotGetValueOfEmptyOptional());
+        }
+
+        if (is_string($exceptionSupplier)) {
+            /** @var class-string<E> $exceptionSupplier */
+            if (!class_exists($exceptionSupplier, autoload: true)) {
+                throw new InvalidArgumentException('Exception supplier must be existing class name.');
+            }
+            return $this->orElseThrow(static fn () => new $exceptionSupplier());
+        }
+
         return $this->orElseGet(static function () use ($exceptionSupplier): never {
             /** @var Throwable|mixed $exception */
-            $exception = $exceptionSupplier === null ? new Exception\CouldNotGetValueOfEmptyOptional() : $exceptionSupplier();
+            $exception = $exceptionSupplier();
             if ($exception instanceof Throwable) {
                 throw $exception;
             }
