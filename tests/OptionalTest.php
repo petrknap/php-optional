@@ -213,33 +213,49 @@ final class OptionalTest extends TestCase
     }
 
     #[DataProvider('dataMethodOrElseThrowWorks')]
-    public function testMethodOrElseThrowWorks(Optional $optional, null|string|callable $exceptionProvider, ?string $expectedValue, ?string $expectedException): void
-    {
+    public function testMethodOrElseThrowWorks(
+        Optional $optional,
+        null|string|callable $exceptionProvider,
+        null|string $message,
+        ?string $expectedValue,
+        ?string $expectedException,
+        ?string $expectedExceptionMessage
+    ): void {
         if ($expectedException) {
             self::expectException($expectedException);
         }
-        self::assertSame($expectedValue, $optional->orElseThrow($exceptionProvider));
+        if ($expectedExceptionMessage) {
+            self::expectExceptionMessage($expectedExceptionMessage);
+        }
+        self::assertSame($expectedValue, $optional->orElseThrow($exceptionProvider, $message));
     }
 
     public static function dataMethodOrElseThrowWorks(): iterable
     {
+        $message = 'This is test!';
         $dataSet = self::makeDataSet([
-            [null, self::VALUE, null],
-            [null, null, SomeException::class],
+            [null, null, self::VALUE, null, null],
+            [null, null, null, SomeException::class, null],
         ]);
         foreach ($dataSet as $name => $data) {
-            $data[3] = $data[3] === null ? null : Exception\CouldNotGetValueOfEmptyOptional::class;
-            yield "{$name} + null supplier" => $data;
+            $data[4] = $data[4] === null ? null : Exception\CouldNotGetValueOfEmptyOptional::class;
+            yield "{$name} + supplier(null)" => $data;
+            $data[2] = $data[5] = $data[4] === null ? null : $message;
+            yield "{$name} + supplier(null) + message" => $data;
         }
-        $exceptionSupplier = static fn(): SomeException => new SomeException();
+        $exceptionSupplier = static fn(string|null $message): SomeException => new SomeException($message ?? '');
         foreach ($dataSet as $name => $data) {
             $data[1] = $exceptionSupplier;
-            yield "{$name} + callable supplier" => $data;
+            yield "{$name} + supplier(callable)" => $data;
+            $data[2] = $data[5] = $data[4] === null ? null : $message;
+            yield "{$name} + supplier(callable) + message" => $data;
         }
         $exceptionSupplier = SomeException::class;
         foreach ($dataSet as $name => $data) {
             $data[1] = $exceptionSupplier;
-            yield "{$name} + string supplier" => $data;
+            yield "{$name} + supplier(class name)" => $data;
+            $data[2] = $data[5] = $data[4] === null ? null : $message;
+            yield "{$name} + supplier(class name) + message" => $data;
         }
     }
 
