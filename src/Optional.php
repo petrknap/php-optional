@@ -164,12 +164,12 @@ abstract class Optional implements JavaSe8\Optional
      */
     public function orElseThrow(
         null|string|callable $exceptionSupplier = null,
-        string|null $exceptionMessage = null,
+        string|null $message = null,
     ): mixed {
         if ($exceptionSupplier === null) {
-            return $this->orElseThrow(static fn () => match ($exceptionMessage) {
+            return $this->orElseThrow(static fn () => match ($message) {
                 null => new Exception\CouldNotGetValueOfEmptyOptional(),
-                default => new Exception\CouldNotGetValueOfEmptyOptional($exceptionMessage),
+                default => new Exception\CouldNotGetValueOfEmptyOptional($message),
             });
         }
 
@@ -178,15 +178,15 @@ abstract class Optional implements JavaSe8\Optional
             if (!class_exists($exceptionSupplier, autoload: true)) {
                 throw new InvalidArgumentException('Exception supplier must be existing class name.');
             }
-            return $this->orElseThrow(static fn () => match ($exceptionMessage) {
+            return $this->orElseThrow(static fn () => match ($message) {
                 null => new $exceptionSupplier(),
-                default => new $exceptionSupplier($exceptionMessage),
+                default => new $exceptionSupplier($message),
             });
         }
 
-        return $this->orElseGet(static function () use ($exceptionSupplier, $exceptionMessage): never {
+        return $this->orElseGet(static function () use ($exceptionSupplier, $message): never {
             /** @var Throwable|mixed $exception */
-            $exception = $exceptionSupplier($exceptionMessage);
+            $exception = $exceptionSupplier($message);
             if ($exception instanceof Throwable) {
                 throw $exception;
             }
