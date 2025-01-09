@@ -195,6 +195,16 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
+     * Inverse of {@see self::ofNullable()}
+     *
+     * @return T|null
+     */
+    public function toNullable(): mixed
+    {
+        return $this->value;
+    }
+
+    /**
      * @param mixed $value not null
      */
     abstract protected static function isSupported(mixed $value): bool;
