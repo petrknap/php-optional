@@ -33,16 +33,18 @@ final class OptionalTest extends TestCase
         Optional::of(null);
     }
 
-    public function testMethodOfFalsableWorks(): void
+    #[DataProvider('dataMethodOfFalsableWorks')]
+    public function testMethodOfFalsableWorks(Optional $expectedOptional, mixed $value): void
     {
-        self::assertEquals(
-            Optional::ofNullable(null),
-            Optional::ofFalsable(false),
-        );
-        self::assertEquals(
-            Optional::ofNullable(self::VALUE),
-            Optional::ofFalsable(self::VALUE),
-        );
+        self::assertEquals($expectedOptional, Optional::ofFalsable($value));
+    }
+
+    public static function dataMethodOfFalsableWorks(): array
+    {
+        return self::makeDataSet([
+            [self::VALUE],
+            [false],
+        ]);
     }
 
     #[DataProvider('dataMethodOfNullableWorks')]
@@ -257,6 +259,20 @@ final class OptionalTest extends TestCase
             $data[2] = $data[5] = $data[4] === null ? null : $message;
             yield "{$name} + supplier(class name) + message" => $data;
         }
+    }
+
+    #[DataProvider('dataMethodToNullableWorks')]
+    public function testMethodToNullableWorks(Optional $optional, mixed $expectedValue): void
+    {
+        self::assertSame($expectedValue, $optional->toNullable());
+    }
+
+    public static function dataMethodToNullableWorks(): array
+    {
+        return self::makeDataSet([
+            [self::VALUE],
+            [null],
+        ]);
     }
 
     private static function makeDataSet(array $args): array
