@@ -8,30 +8,27 @@ use PHPUnit\Framework\TestCase;
 
 final class IdeTest extends TestCase
 {
+    /**
+     * @note Try placing the cursor over each `tryIt` call.
+     */
     public function testCheckThisInYourIde(): void
     {
-        $optional = IdeTestOptional::of($this);
+        self::expectNotToPerformAssertions();
+
+        $instance = new Some\DataObject();
+        $optional = Some\OptionalDataObject::of($instance);
 
         if ($optional->isPresent()) {
             $optional->get()->tryIt();  # <--- HERE
         }
 
-        $optional->orElse($this)->tryIt();  # <--- HERE
-        $optional->orElseGet(fn (): self => $this)->tryIt();  # <--- HERE
+        Optional::empty()->orElse($instance)->tryIt();  # <--- HERE
+        Optional::empty()->orElseGet(static fn (): Some\DataObject => $instance)->tryIt();  # <--- HERE
         $optional->orElseThrow()->tryIt();  # <--- HERE
 
         $optional->filter(static fn (): bool => true)->orElseThrow()->tryIt();  # <--- HERE
 
-        Optional::of(0)->flatMap(fn (): IdeTestOptional => IdeTestOptional::of($this))->orElseThrow()->tryIt();  # <--- HERE @todo fix it
-        Optional::of(0)->map(fn (): IdeTest => $this)->orElseThrow()->tryIt();  # <--- HERE @todo fix it
-
-        self::markTestSkipped('Try placing the cursor over each `tryIt` call.');
-    }
-
-    /**
-     * It works.
-     */
-    public function tryIt(): void
-    {
+        Optional::of(0)->flatMap(static fn (): Some\OptionalDataObject => $optional)->orElseThrow()->tryIt();  # <--- HERE
+        Optional::of(0)->map(static fn (): Some\DataObject => $instance)->orElseThrow()->tryIt();  # <--- HERE
     }
 }

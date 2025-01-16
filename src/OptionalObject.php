@@ -24,7 +24,8 @@ abstract class OptionalObject extends Optional
                 } catch (Exception\CouldNotFindTypedOptionalForValue) {
                 }
             }
-            return new class ($value) extends OptionalObject {  # @phpstan-ignore-line
+            /** @var static */
+            return new class ($value) extends OptionalObject {
                 protected static function getInstanceOf(): string
                 {
                     TypedOptional::triggerNotice(OptionalObject::class . ' does not check the instance of object.');

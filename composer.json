@@ -22,7 +22,9 @@
   ],
   "homepage": "https://github.com/petrknap/php-optional",
   "keywords": [
-    "optional"
+    "datatype",
+    "optional",
+    "type"
   ],
   "license": "LGPL-3.0-or-later",
   "name": "petrknap/optional",
