@@ -24,6 +24,10 @@ abstract class OptionalResource extends Optional
             }
             /** @var static */
             return new class ($value) extends OptionalResource {
+                protected static function isInstanceOfStatic(object $obj): bool
+                {
+                    return $obj instanceof OptionalResource;
+                }
                 protected static function getResourceType(): string
                 {
                     TypedOptional::triggerNotice(OptionalResource::class . ' does not check the type of resource.');
