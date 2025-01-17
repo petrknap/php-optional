@@ -33,14 +33,12 @@ OptionalResource::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
 ```php
 namespace PetrKnap\Optional;
 
-class YourClass {}
-
 /**
- * @extends OptionalObject<YourClass>
+ * @extends OptionalObject<Some\DataObject>
  */
 class YourOptional extends OptionalObject {
     protected static function getInstanceOf(): string {
-        return YourClass::class;
+        return Some\DataObject::class;
     }
 }
 TypedOptional::register(YourOptional::class); // optional recommended step
@@ -50,8 +48,9 @@ function your_strong_typed_function(YourOptional $input): YourOptional {
 }
 
 /**
- * @param Optional<YourClass> $input
- * @return Optional<YourClass>
+ * @param Optional<Some\DataObject> $input
+ *
+ * @return Optional<Some\DataObject>
  */
 function your_weak_typed_function(Optional $input): Optional {
     return YourOptional::empty();

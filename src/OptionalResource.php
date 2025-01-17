@@ -22,7 +22,8 @@ abstract class OptionalResource extends Optional
                 } catch (Exception\CouldNotFindTypedOptionalForValue) {
                 }
             }
-            return new class ($value) extends OptionalResource {  # @phpstan-ignore-line
+            /** @var static */
+            return new class ($value) extends OptionalResource {
                 protected static function getResourceType(): string
                 {
                     TypedOptional::triggerNotice(OptionalResource::class . ' does not check the type of resource.');

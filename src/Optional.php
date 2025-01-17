@@ -63,7 +63,8 @@ abstract class Optional implements JavaSe8\Optional
                 } catch (Exception\CouldNotFindTypedOptionalForValue) {
                 }
             }
-            return new class ($value) extends Optional {  # @phpstan-ignore-line
+            /** @var static */
+            return new class ($value) extends Optional {
                 protected static function isSupported(mixed $value): bool
                 {
                     TypedOptional::triggerNotice(Optional::class . ' does not check the type of value.');
@@ -96,16 +97,28 @@ abstract class Optional implements JavaSe8\Optional
         return $this;
     }
 
-    public function flatMap(callable $mapper): self  # @phpstan-ignore-line
+    /**
+     * @template U of mixed
+     *
+     * @param callable(T): JavaSe8\Optional<U> $mapper
+     *
+     * @return self<U>
+     */
+    public function flatMap(callable $mapper): self
     {
-        if ($this->value !== null) {
-            $mapped = $mapper($this->value);
-            if (!$mapped instanceof self) {
-                throw new InvalidArgumentException('Mapper must return instance of ' . self::class . '.');
-            }
-            return $mapped;
+        if ($this->value === null) {
+            /** @var self<U> */
+            return Optional::empty();
         }
-        return $this;
+
+        /** @var mixed $mapped */
+        $mapped = $mapper($this->value);
+        /** @var self<U> */
+        return match (true) {
+            $mapped instanceof self => $mapped,
+            $mapped instanceof JavaSe8\Optional => $mapped->isPresent() ? Optional::of($mapped->get()) : Optional::empty(),
+            default => throw new InvalidArgumentException('Mapper must return instance of ' . JavaSe8\Optional::class . '.'),
+        };
     }
 
     public function get(): mixed
@@ -128,9 +141,16 @@ abstract class Optional implements JavaSe8\Optional
         return $this->wasPresent = $this->value !== null;
     }
 
-    public function map(callable $mapper): self  # @phpstan-ignore-line
+    /**
+     * @template U of mixed
+     *
+     * @param callable(T): U $mapper
+     *
+     * @return self<U>
+     */
+    public function map(callable $mapper): self
     {
-        /** @var callable(T): self<mixed> $flatMapper */
+        /** @var callable(T): self<U> $flatMapper */
         $flatMapper = static function (mixed $value) use ($mapper): self {
             /** @var mixed $mapped */
             $mapped = $mapper($value);
