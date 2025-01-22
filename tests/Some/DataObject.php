@@ -6,6 +6,11 @@ namespace PetrKnap\Optional\Some;
 
 final class DataObject
 {
+    public function __construct(
+        public readonly string|null $value = null,
+    ) {
+    }
+
     /**
      * It works!
      *

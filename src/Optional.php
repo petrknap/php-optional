@@ -65,6 +65,11 @@ abstract class Optional implements JavaSe8\Optional
             }
             /** @var static */
             return new class ($value) extends Optional {
+                protected static function isInstanceOfStatic(object $obj): bool
+                {
+                    return $obj instanceof Optional;
+                }
+
                 protected static function isSupported(mixed $value): bool
                 {
                     TypedOptional::triggerNotice(Optional::class . ' does not check the type of value.');
@@ -75,12 +80,31 @@ abstract class Optional implements JavaSe8\Optional
         return new static($value);
     }
 
-    public function equals(mixed $obj): bool
+    /**
+     * @param bool $strict if `true` then the value, if the value is an object, will be compared as a reference
+     */
+    public function equals(mixed $obj, bool $strict = false): bool
     {
-        if ($obj instanceof static) {
-            $obj = $obj->isPresent() ? $obj->get() : null;
+        if (!($obj instanceof JavaSe8\Optional)) {
+            try {
+                $obj = static::ofNullable($obj);
+            } catch (InvalidArgumentException) {
+                return false;
+            }
         }
-        return ($obj === null || static::isSupported($obj)) && $this->value == $obj;
+
+        if (static::isInstanceOfStatic($obj)) {
+            $equals = null;
+            $obj->ifPresent(function (mixed $objValue) use (&$equals, $strict): void {
+                $equals = match (!is_object($this->value) || $strict) {
+                    true => $this->value === $objValue,
+                    false => $this->value == $objValue,
+                };
+            });
+            return $equals ?? $this->value === null;
+        }
+
+        return false;
     }
 
     public function filter(callable $predicate): static
@@ -222,6 +246,14 @@ abstract class Optional implements JavaSe8\Optional
     public function toNullable(): mixed
     {
         return $this->value;
+    }
+
+    /**
+     * @internal overridden by abstracts
+     */
+    protected static function isInstanceOfStatic(object $obj): bool
+    {
+        return $obj instanceof static;
     }
 
     /**

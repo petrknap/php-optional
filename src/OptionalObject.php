@@ -26,6 +26,10 @@ abstract class OptionalObject extends Optional
             }
             /** @var static */
             return new class ($value) extends OptionalObject {
+                protected static function isInstanceOfStatic(object $obj): bool
+                {
+                    return $obj instanceof OptionalObject;
+                }
                 protected static function getInstanceOf(): string
                 {
                     TypedOptional::triggerNotice(OptionalObject::class . ' does not check the instance of object.');

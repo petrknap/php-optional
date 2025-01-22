@@ -29,6 +29,23 @@ final class OptionalObjectTest extends TestCase
         );
     }
 
+    public function testSameObjectIsStrictlyEqual(): void
+    {
+        $o = new stdClass();
+        $a = OptionalObject::of($o);
+        $b = OptionalObject::of($o);
+
+        self::assertTrue($a->equals($b, strict: true));
+    }
+
+    public function testEqualObjectsAreNotStrictlyEqual(): void
+    {
+        $a = OptionalObject::of(new stdClass());
+        $b = OptionalObject::of(new stdClass());
+
+        self::assertFalse($a->equals($b, strict: true));
+    }
+
     public function testEqualObjectsAreEqual(): void
     {
         $a = OptionalObject::of(new stdClass());

@@ -8,6 +8,7 @@ use DomainException as SomeException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 final class OptionalTest extends TestCase
 {
@@ -62,31 +63,116 @@ final class OptionalTest extends TestCase
     }
 
     #[DataProvider('dataMethodEqualsWorks')]
-    public function testMethodEqualsWorks(Optional $optional, mixed $obj, bool $expectedResult): void
+    public function testMethodEqualsWorks(Optional $optional, mixed $obj, bool|null $isStrict, bool $expectedResult): void
     {
-        self::assertSame($expectedResult, $optional->equals($obj));
+        self::assertSame($expectedResult, match ($isStrict === null) {
+            true => $optional->equals($obj),
+            false => $optional->equals($obj, strict: $isStrict),
+        });
     }
 
     public static function dataMethodEqualsWorks(): array
     {
-        $object1 = new \stdClass();
-        $object1->property = self::VALUE;
-        $object2 = new \stdClass();
-        $object2->property = self::VALUE;
-        $object3 = new \stdClass();
-        $object3->property = self::OTHER;
+        $object = new Some\DataObject(self::VALUE);
+        $set = static function (string $key, Optional $optional, array $equals, bool|null $isStrict = null) use ($object): iterable {
+            $sameObject = $object;
+            $equalObject = new Some\DataObject(self::VALUE);
+            $otherObject = new Some\DataObject(self::OTHER);
+            $differentObject = new stdClass();
+            $differentObject->value = self::VALUE;
+
+            $set = [
+                // non-optional
+                'null' => null,
+                'value' => self::VALUE,
+                'other value' => self::OTHER,
+                'same object' => $sameObject,
+                'equal object' => $equalObject,
+                'other object' => $otherObject,
+                'different object' => $differentObject,
+                // optional
+                'optional (empty)' => Optional::empty(),
+                'optional (value)' => Optional::of(self::VALUE),
+                'optional (other value)' => Optional::of(self::OTHER),
+                'optional (same object)' => Optional::of($sameObject),
+                'optional (equal object)' => Optional::of($equalObject),
+                'optional (other object)' => Optional::of($otherObject),
+                'optional (different object)' => Optional::of($differentObject),
+                // registered typed optional
+                'registered typed optional (empty)' => OptionalString::empty(),
+                'registered typed optional (value)' => OptionalString::of(self::VALUE),
+                'registered typed optional (other value)' => OptionalString::of(self::OTHER),
+                // unregistered typed optional
+                'unregistered typed optional (empty)' => Some\OptionalDataObject::empty(),
+                'unregistered typed optional (same object)' => Some\OptionalDataObject::of($sameObject),
+                'unregistered typed optional (equal object)' => Some\OptionalDataObject::of($equalObject),
+                'unregistered typed optional (other object)' => Some\OptionalDataObject::of($otherObject),
+            ];
+            foreach ($set as $name => $value) {
+                $shouldEqual = in_array($name, $equals);
+                yield sprintf(
+                    '%s %s %s',
+                    $key,
+                    sprintf($shouldEqual ? '%ss to' : 'does not %s to', match ($isStrict) {
+                        true => 'strictly equal',
+                        false => 'loosely equal',
+                        null => 'equal',
+                    }),
+                    $name,
+                ) => [$optional, $value, $isStrict, $shouldEqual];
+            }
+        };
+
         return [
-            'equal (value)' => [Optional::of(self::VALUE), self::VALUE, true],
-            'equal (optional)' => [Optional::of(self::VALUE), Optional::of(self::VALUE), true],
-            'equal (object)' => [Optional::of($object1), $object2, true],
-            'equal (optional<object>)' => [Optional::of($object1), Optional::of($object2), true],
-            'equal (empty)' => [Optional::empty(), Optional::empty(), true],
-            'not equal (value)' => [Optional::of(self::VALUE), self::OTHER, false],
-            'not equal (optional)' => [Optional::of(self::VALUE), Optional::of(self::OTHER), false],
-            'not equal (object)' => [Optional::of($object1), $object3, false],
-            'not equal (optional<object>)' => [Optional::of($object1), Optional::of($object3), false],
-            'not equal (empty-present)' => [Optional::empty(), Optional::of(self::VALUE), false],
-            'not equal (present-empty)' => [Optional::of(self::VALUE), Optional::empty(), false],
+            ...$set(
+                'optional (empty)', // ~ typeless (empty)
+                Optional::empty(),
+                ['null', 'optional (empty)', 'registered typed optional (empty)', 'unregistered typed optional (empty)'],
+            ),
+            ...$set(
+                'optional (value)', // = registered typed optional (value)
+                Optional::of(self::VALUE),
+                ['value', 'optional (value)', 'registered typed optional (value)'],
+            ),
+            ...$set(
+                'optional (object)', // ~ unregistered typed optional (object)
+                Optional::of($object),
+                ['same object', 'equal object', 'optional (same object)', 'optional (equal object)', 'unregistered typed optional (same object)', 'unregistered typed optional (equal object)'],
+                false,
+            ),
+            ...$set(
+                'optional (object)', // ~ unregistered typed optional (object)
+                Optional::of($object),
+                ['same object', 'optional (same object)', 'unregistered typed optional (same object)'],
+                true,
+            ),
+            ...$set(
+                'registered typed optional (empty)',
+                OptionalString::empty(),
+                ['null', 'registered typed optional (empty)'],
+            ),
+            ...$set(
+                'registered typed optional (value)', // = optional (value)
+                OptionalString::of(self::VALUE),
+                ['value', 'optional (value)', 'registered typed optional (value)'],
+            ),
+            ...$set(
+                'unregistered typed optional (empty)',
+                Some\OptionalDataObject::empty(),
+                ['null', 'unregistered typed optional (empty)'],
+            ),
+            ...$set(
+                'unregistered typed optional (object)',
+                Some\OptionalDataObject::of($object),
+                ['same object', 'equal object', 'unregistered typed optional (same object)', 'unregistered typed optional (equal object)'],
+                false,
+            ),
+            ...$set(
+                'unregistered typed optional (object)',
+                Some\OptionalDataObject::of($object),
+                ['same object', 'unregistered typed optional (same object)'],
+                true,
+            ),
         ];
     }
 
