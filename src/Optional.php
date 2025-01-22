@@ -153,10 +153,12 @@ abstract class Optional implements JavaSe8\Optional
         return $this->orElseThrow();
     }
 
-    public function ifPresent(callable $consumer): void
+    public function ifPresent(callable $consumer, callable|null $else = null): void
     {
         if ($this->value !== null) {
             $consumer($this->value);
+        } elseif ($else !== null) {
+            $else();
         }
     }
 

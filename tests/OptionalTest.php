@@ -225,22 +225,28 @@ final class OptionalTest extends TestCase
     }
 
     #[DataProvider('dataMethodIfPresentWorks')]
-    public function testMethodIfPresentWorks(Optional $optional, bool $expectedInvoke): void
+    public function testMethodIfPresentWorks(Optional $optional, string $expectedInvoked): void
     {
-        $invoked = false;
-        $optional->ifPresent(static function (string $value) use (&$invoked) {
-            self::assertSame(self::VALUE, $value);
-            $invoked = true;
-        });
+        $invoked = null;
+        $optional->ifPresent(
+            consumer: static function (string $value) use (&$invoked) {
+                self::assertSame(self::VALUE, $value);
+                $invoked = 'consumer';
+            },
+            else: static function (mixed ...$args) use (&$invoked) {
+                self::assertSame([], $args);
+                $invoked = 'else';
+            },
+        );
 
-        self::assertSame($expectedInvoke, $invoked);
+        self::assertSame($expectedInvoked, $invoked);
     }
 
     public static function dataMethodIfPresentWorks(): array
     {
         return self::makeDataSet([
-            [true],
-            [false],
+            ['consumer'],
+            ['else'],
         ]);
     }
 
