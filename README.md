@@ -25,7 +25,7 @@ if ($optionalString->isPresent()) {
 OptionalResource::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
     fwrite($tmpFile, 'data');
     fclose($tmpFile);
-});
+}, else: fn () => print('tmpfile() failed'));
 ```
 
 ### Create and use your own typed optional
