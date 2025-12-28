@@ -92,18 +92,18 @@ interface Optional
     /**
      * Return the value if present, otherwise return other.
      *
-     * @param T $other
+     * @param T|null $other
      *
-     * @return T
+     * @return ($other is T ? T : null)
      */
     public function orElse(mixed $other): mixed;
 
     /**
      * Return the value if present, otherwise invoke provided supplier and return the result of that invocation.
      *
-     * @param callable(): T $otherSupplier
+     * @param (callable(): T)|(callable(): (T|null)) $otherSupplier
      *
-     * @return T
+     * @return ($otherSupplier is (callable(): T) ? T : T|null)
      */
     public function orElseGet(callable $otherSupplier): mixed;
 
