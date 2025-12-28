@@ -241,13 +241,17 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
+     * @deprecated use {@see self::orElse()}
+     *
+     * @todo BC remove it
+     *
      * Inverse of {@see self::ofNullable()}
      *
      * @return T|null
      */
     public function toNullable(): mixed
     {
-        return $this->value;
+        return $this->orElse(null);
     }
 
     /**
