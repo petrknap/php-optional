@@ -41,7 +41,7 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
-     * Many PHP functions return `false` on failure, this is a factory for them.
+     * In many cases a failure returns `false`, this method serves as a factory for them.
      *
      * @param T|false $value
      */
@@ -78,6 +78,23 @@ abstract class Optional implements JavaSe8\Optional
             };
         }
         return new static($value);
+    }
+
+    /**
+     * In many cases you will receive an `iterable` of single value, this method serves as a factory for them.
+     *
+     * @param iterable<T> $value
+     */
+    public static function ofSingle(iterable $value): static
+    {
+        $count = 0;
+        $item = null;
+        foreach ($value as $item) {
+            if (++$count > 1) {
+                throw new InvalidArgumentException('Count of value must not be greater than 1.');
+            }
+        }
+        return static::ofNullable($item);
     }
 
     /**
