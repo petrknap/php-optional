@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 use DomainException as SomeException;
+use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -60,6 +61,27 @@ final class OptionalTest extends TestCase
             [self::VALUE],
             [null],
         ]);
+    }
+
+    #[DataProvider('dataMethodOfSingleWorks')]
+    public function testMethodOfSingleWorks(Optional $expectedOptional, iterable $value): void
+    {
+        self::assertTrue(Optional::ofSingle($value)->equals($expectedOptional));
+    }
+
+    public static function dataMethodOfSingleWorks(): array
+    {
+        return self::makeDataSet([
+            [[self::VALUE]],
+            [[]],
+        ]);
+    }
+
+    public function testMethodOfSingleThrowsOnMultipleValues(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+
+        Optional::ofSingle([self::VALUE, self::VALUE]);
     }
 
     #[DataProvider('dataMethodEqualsWorks')]
