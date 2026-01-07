@@ -9,6 +9,8 @@ namespace PetrKnap\Optional;
  */
 final class OptionalInt extends Optional
 {
+    use NonGenericOptional;
+
     protected static function isSupported(mixed $value): bool
     {
         return is_int($value);

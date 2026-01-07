@@ -9,20 +9,25 @@ namespace PetrKnap\Optional;
  */
 abstract class OptionalResource extends Optional
 {
+    use NonGenericOptional;
+
     /** @internal */
     protected const ANY_RESOURCE_TYPE = '';
 
-    public static function ofNullable(mixed $value): static
+    /**
+     * @param resource|null $value
+     */
+    public static function ofNullable(mixed $value): self
     {
         if (static::class === OptionalResource::class) {
             if ($value !== null) {
                 try {
-                    /** @var static */
+                    /** @var self */
                     return TypedOptional::of($value, OptionalResource::class);
                 } catch (Exception\CouldNotFindTypedOptionalForValue) {
                 }
             }
-            /** @var static */
+            /** @var self */
             return new class ($value) extends OptionalResource {
                 protected static function isInstanceOfStatic(object $obj): bool
                 {
@@ -36,6 +41,7 @@ abstract class OptionalResource extends Optional
                 }
             };
         }
+        /** @var self */
         return parent::ofNullable($value);
     }
 

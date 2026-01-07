@@ -37,6 +37,7 @@ namespace PetrKnap\Optional;
  * @extends OptionalObject<Some\DataObject>
  */
 class YourOptional extends OptionalObject {
+    use NonGenericOptional;
     protected static function getInstanceOf(): string {
         return Some\DataObject::class;
     }

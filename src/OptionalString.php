@@ -9,6 +9,8 @@ namespace PetrKnap\Optional;
  */
 final class OptionalString extends Optional
 {
+    use NonGenericOptional;
+
     protected static function isSupported(mixed $value): bool
     {
         return is_string($value);
