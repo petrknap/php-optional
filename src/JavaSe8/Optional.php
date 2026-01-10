@@ -94,7 +94,7 @@ interface Optional
      *
      * @param T|null $other
      *
-     * @return ($other is T ? T : null)
+     * @return ($other is T ? T : T|null)
      */
     public function orElse(mixed $other): mixed;
 
