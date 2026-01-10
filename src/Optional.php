@@ -87,14 +87,14 @@ abstract class Optional implements JavaSe8\Optional
      */
     public static function ofSingle(iterable $value): static
     {
-        $count = 0;
-        $item = null;
-        foreach ($value as $item) {
-            if (++$count > 1) {
-                throw new InvalidArgumentException('Count of value must not be greater than 1.');
+        $option = null;
+        foreach ($value as $v) {
+            if ($option !== null) {
+                throw new InvalidArgumentException('Value is not single.');
             }
+            $option = static::of($v);
         }
-        return static::ofNullable($item);
+        return $option ?? static::empty();
     }
 
     /**

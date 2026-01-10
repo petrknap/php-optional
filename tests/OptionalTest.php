@@ -77,6 +77,13 @@ final class OptionalTest extends TestCase
         ]);
     }
 
+    public function testMethodOfSingleThrowsOnNullValue(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+
+        Optional::ofSingle([null]);
+    }
+
     public function testMethodOfSingleThrowsOnMultipleValues(): void
     {
         self::expectException(InvalidArgumentException::class);
