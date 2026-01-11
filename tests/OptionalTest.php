@@ -308,31 +308,35 @@ final class OptionalTest extends TestCase
     }
 
     #[DataProvider('dataMethodOrElseWorks')]
-    public function testMethodOrElseWorks(Optional $optional, string $expectedValue): void
+    public function testMethodOrElseWorks(Optional $optional, string|null $orValue, string|null $expectedValue): void
     {
-        self::assertSame($expectedValue, $optional->orElse(self::OTHER));
+        self::assertSame($expectedValue, $optional->orElse($orValue));
     }
 
     public static function dataMethodOrElseWorks(): array
     {
         return self::makeDataSet([
-            [self::VALUE],
-            [self::OTHER],
-        ]);
+            [self::OTHER, self::VALUE],
+            [self::OTHER, self::OTHER],
+        ]) + [
+            'typed null' => [OptionalString::empty(), null, null],
+        ];
     }
 
     #[DataProvider('dataMethodOrElseGetWorks')]
-    public function testMethodOrElseGetWorks(Optional $optional, string $expectedValue): void
+    public function testMethodOrElseGetWorks(Optional $optional, string|null $orValue, string|null $expectedValue): void
     {
-        self::assertSame($expectedValue, $optional->orElseGet(static fn(): string => self::OTHER));
+        self::assertSame($expectedValue, $optional->orElseGet(static fn(): string|null => $orValue));
     }
 
     public static function dataMethodOrElseGetWorks(): array
     {
         return self::makeDataSet([
-            [self::VALUE],
-            [self::OTHER],
-        ]);
+            [self::OTHER, self::VALUE],
+            [self::OTHER, self::OTHER],
+        ]) + [
+            'typed null' => [OptionalString::empty(), null, null],
+        ];
     }
 
     #[DataProvider('dataMethodOrElseThrowWorks')]

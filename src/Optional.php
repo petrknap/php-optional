@@ -213,7 +213,9 @@ abstract class Optional implements JavaSe8\Optional
             return $this->value;
         }
         $other = $otherSupplier();
-        return static::isSupported($other) ? $other : throw new InvalidArgumentException('Other supplier must return supported other.');
+        return $other === null || static::isSupported($other)
+            ? $other
+            : throw new InvalidArgumentException('Other supplier must return supported other.');
     }
 
     /**
