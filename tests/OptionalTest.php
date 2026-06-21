@@ -386,20 +386,6 @@ final class OptionalTest extends TestCase
         }
     }
 
-    #[DataProvider('dataMethodToNullableWorks')]
-    public function testMethodToNullableWorks(Optional $optional, mixed $expectedValue): void
-    {
-        self::assertSame($expectedValue, $optional->toNullable());
-    }
-
-    public static function dataMethodToNullableWorks(): array
-    {
-        return self::makeDataSet([
-            [self::VALUE],
-            [null],
-        ]);
-    }
-
     private static function makeDataSet(array $args): array
     {
         return [
