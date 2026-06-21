@@ -9,6 +9,8 @@ namespace PetrKnap\Optional;
  */
 final class OptionalBool extends Optional
 {
+    use NonGenericOptional;
+
     protected static function isSupported(mixed $value): bool
     {
         return is_bool($value);

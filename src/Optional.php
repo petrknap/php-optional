@@ -27,12 +27,24 @@ abstract class Optional implements JavaSe8\Optional
         }
     }
 
-    public static function empty(): static
+    /**
+     * @return self<T>
+     */
+    public static function empty(): self
     {
-        return static::ofNullable(null);
+        /** @var T|null $typedNull */
+        $typedNull = null;
+        return static::ofNullable($typedNull);
     }
 
-    public static function of(mixed $value): static
+    /**
+     * @template U of T
+     *
+     * @param U $value
+     *
+     * @return self<U>
+     */
+    public static function of(mixed $value): self
     {
         if ($value === null) {
             throw new InvalidArgumentException('Value must not be null.');
@@ -43,27 +55,39 @@ abstract class Optional implements JavaSe8\Optional
     /**
      * In many cases a failure returns `false`, this method serves as a factory for them.
      *
-     * @param T|false $value
+     * @template U of T
+     *
+     * @param U|false $value
+     *
+     * @return self<U>
      */
-    public static function ofFalsable(mixed $value): static
+    public static function ofFalsable(mixed $value): self
     {
         if ($value === false) {
+            /** @var self<U> */
             return static::empty();
         }
         return static::of($value);
     }
 
-    public static function ofNullable(mixed $value): static
+    /**
+     * @template U of T
+     *
+     * @param U|null $value
+     *
+     * @return self<U>
+     */
+    public static function ofNullable(mixed $value): self
     {
         if (static::class === Optional::class) {
             if ($value !== null) {
                 try {
-                    /** @var static */
+                    /** @var self<U> */
                     return TypedOptional::of($value, Optional::class);
                 } catch (Exception\CouldNotFindTypedOptionalForValue) {
                 }
             }
-            /** @var static */
+            /** @var self<U> */
             return new class ($value) extends Optional {
                 protected static function isInstanceOfStatic(object $obj): bool
                 {
@@ -83,9 +107,13 @@ abstract class Optional implements JavaSe8\Optional
     /**
      * In many cases you will receive an `iterable` of single value, this method serves as a factory for them.
      *
-     * @param iterable<T> $value
+     * @template U of T
+     *
+     * @param iterable<U> $value
+     *
+     * @return self<U>
      */
-    public static function ofSingle(iterable $value): static
+    public static function ofSingle(iterable $value): self
     {
         $option = null;
         foreach ($value as $v) {
@@ -94,6 +122,7 @@ abstract class Optional implements JavaSe8\Optional
             }
             $option = static::of($v);
         }
+        /** @var self<U> */
         return $option ?? static::empty();
     }
 
@@ -103,6 +132,7 @@ abstract class Optional implements JavaSe8\Optional
     public function equals(mixed $obj, bool $strict = false): bool
     {
         if (!($obj instanceof JavaSe8\Optional)) {
+            /** @var T|null $obj */
             try {
                 $obj = static::ofNullable($obj);
             } catch (InvalidArgumentException) {
@@ -124,7 +154,10 @@ abstract class Optional implements JavaSe8\Optional
         return false;
     }
 
-    public function filter(callable $predicate): static
+    /**
+     * @return self<T>
+     */
+    public function filter(callable $predicate): self
     {
         if ($this->value !== null) {
             $matches = $predicate($this->value);
@@ -139,24 +172,27 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
-     * @template U of mixed
+     * @template U of mixed type of non-null value
+     * @template V of Optional<U>
      *
-     * @param callable(T): JavaSe8\Optional<U> $mapper
+     * @param ($empty is null ? callable(T): JavaSe8\Optional<U> : callable(T): V) $mapper
+     * @param V|null $empty
      *
-     * @return self<U>
+     * @return ($empty is null ? Optional<U> : V)
+     *
+     * @note do not use {@see self}/{@see static}, it maps itself to another {@see Optional}
      */
-    public function flatMap(callable $mapper): self
+    public function flatMap(callable $mapper, Optional|null $empty = null): Optional
     {
         if ($this->value === null) {
-            /** @var self<U> */
-            return Optional::empty();
+            /** @var V */
+            return $empty ?? Optional::empty();
         }
 
-        /** @var mixed $mapped */
+        /** @var JavaSe8\Optional<T>|"" $mapped */
         $mapped = $mapper($this->value);
-        /** @var self<U> */
         return match (true) {
-            $mapped instanceof self => $mapped,
+            $mapped instanceof Optional => $mapped,
             $mapped instanceof JavaSe8\Optional => $mapped->isPresent() ? Optional::of($mapped->get()) : Optional::empty(),
             default => throw new InvalidArgumentException('Mapper must return instance of ' . JavaSe8\Optional::class . '.'),
         };
@@ -185,17 +221,19 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
-     * @template U of mixed
+     * @template U of mixed type of non-null value
      *
      * @param callable(T): U $mapper
      *
-     * @return self<U>
+     * @return Optional<U>
+     *
+     * @note do not use {@see self}/{@see static}, it maps itself to another {@see Optional}
      */
-    public function map(callable $mapper): self
+    public function map(callable $mapper): Optional
     {
-        /** @var callable(T): self<U> $flatMapper */
-        $flatMapper = static function (mixed $value) use ($mapper): self {
-            /** @var mixed $mapped */
+        /** @var callable(T): Optional<U> $flatMapper */
+        $flatMapper = static function (mixed $value) use ($mapper): Optional {
+            /** @var T $mapped */
             $mapped = $mapper($value);
             return Optional::ofNullable($mapped);
         };
