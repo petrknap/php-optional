@@ -12,9 +12,19 @@ use PetrKnap\Optional\OptionalInt;
 use PetrKnap\Optional\OptionalObject;
 use PetrKnap\Optional\OptionalString;
 
-$functionWithGenericInputOptions = fn (Optional $string = null, Optional $int = null) => null;
-$functionWithNonGenericInputOptions = fn (OptionalString $string = null, OptionalInt $int = null) => null;
-$functionWithNonGenericInputs = fn (string $string = '', int $int = 0) => null;
+$check = (new class {
+    /**
+     * @param Optional<object> $object
+     */
+    public function covariantInputOption(Optional $object): void {}
+    /**
+     * @param Optional<string>|null $string
+     * @param Optional<int>|null $int
+     */
+    public function genericInputOptions(Optional $string = null, Optional $int = null): void {}
+    public function nonGenericInputOptions(OptionalString $string = null, OptionalInt $int = null): void {}
+    public function nonGenericInputs(string $string = '', int $int = 0): void {}
+});
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -64,14 +74,14 @@ $stringOptionOrElseGet = $stringOption->orElseGet(static fn (): string => '');
 $stringOption->orElseGet(static fn (): int => 0); // @phpstan-ignore argument.type
 
 // Use generic option as input for functions
-$functionWithGenericInputOptions(string: $stringOption);
-$functionWithNonGenericInputOptions(string: $stringOption); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(string: $stringOption->get());
-$functionWithNonGenericInputs(string: $stringOption->orElseThrow());
-$functionWithNonGenericInputs(string: $stringOptionOrElse);
-$functionWithNonGenericInputs(string: $stringOptionOrElseNull); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(string: $stringOptionOrElseNull ?? '');
-$functionWithNonGenericInputs(string: $stringOptionOrElseGet);
+$check->genericInputOptions(string: $stringOption);
+$check->nonGenericInputOptions(string: $stringOption); // @phpstan-ignore argument.type
+$check->nonGenericInputs(string: $stringOption->get());
+$check->nonGenericInputs(string: $stringOption->orElseThrow());
+$check->nonGenericInputs(string: $stringOptionOrElse);
+$check->nonGenericInputs(string: $stringOptionOrElseNull); // @phpstan-ignore argument.type
+$check->nonGenericInputs(string: $stringOptionOrElseNull ?? '');
+$check->nonGenericInputs(string: $stringOptionOrElseGet);
 
 // Re-map generic option & call filter on it to check new generic
 $intOptionMapped = $stringOption->map(static fn (string $value): int => 0);
@@ -82,12 +92,12 @@ $intOptionFlatMappedFiltered = $intOptionFlatMapped->filter(static fn (int $valu
 $intOptionFlatMapped->filter(static fn (string $value): bool => true); // @phpstan-ignore argument.type
 
 // Use re-mapped filtered options as input for functions
-$functionWithGenericInputOptions(int: $intOptionMappedFiltered);
-$functionWithNonGenericInputOptions(int: $intOptionMappedFiltered); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(int: $intOptionMappedFiltered->get());
-$functionWithGenericInputOptions(int: $intOptionFlatMappedFiltered);
-$functionWithNonGenericInputOptions(int: $intOptionFlatMappedFiltered); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(int: $intOptionFlatMappedFiltered->get());
+$check->genericInputOptions(int: $intOptionMappedFiltered);
+$check->nonGenericInputOptions(int: $intOptionMappedFiltered); // @phpstan-ignore argument.type
+$check->nonGenericInputs(int: $intOptionMappedFiltered->get());
+$check->genericInputOptions(int: $intOptionFlatMappedFiltered);
+$check->nonGenericInputOptions(int: $intOptionFlatMappedFiltered); // @phpstan-ignore argument.type
+$check->nonGenericInputs(int: $intOptionFlatMappedFiltered->get());
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -110,14 +120,14 @@ $stringOptionOrElseGet = $stringOption->orElseGet(static fn (): string => '');
 $stringOption->orElseGet(static fn (): int => 0); // @phpstan-ignore argument.type
 
 // Use non-generic option as input for functions
-$functionWithGenericInputOptions(string: $stringOption);
-$functionWithNonGenericInputOptions(string: $stringOption);
-$functionWithNonGenericInputs(string: $stringOption->get());
-$functionWithNonGenericInputs(string: $stringOption->orElseThrow());
-$functionWithNonGenericInputs(string: $stringOptionOrElse);
-$functionWithNonGenericInputs(string: $stringOptionOrElseNull); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(string: $stringOptionOrElseNull ?? '');
-$functionWithNonGenericInputs(string: $stringOptionOrElseGet);
+$check->genericInputOptions(string: $stringOption);
+$check->nonGenericInputOptions(string: $stringOption);
+$check->nonGenericInputs(string: $stringOption->get());
+$check->nonGenericInputs(string: $stringOption->orElseThrow());
+$check->nonGenericInputs(string: $stringOptionOrElse);
+$check->nonGenericInputs(string: $stringOptionOrElseNull); // @phpstan-ignore argument.type
+$check->nonGenericInputs(string: $stringOptionOrElseNull ?? '');
+$check->nonGenericInputs(string: $stringOptionOrElseGet);
 
 // Re-map typed option & call filter on it to check new generic
 $intOptionMapped = $stringOption->map(static fn (string $value): int => 0);
@@ -128,12 +138,12 @@ $intOptionFlatMappedFiltered = $intOptionFlatMapped->filter(static fn (int $valu
 $intOptionFlatMapped->filter(static fn (string $value): bool => true); // @phpstan-ignore argument.type
 
 // Use re-mapped filtered options as input for functions
-$functionWithGenericInputOptions(int: $intOptionMappedFiltered);
-$functionWithNonGenericInputOptions(int: $intOptionMappedFiltered); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(int: $intOptionMappedFiltered->get());
-$functionWithGenericInputOptions(int: $intOptionFlatMappedFiltered);
-$functionWithNonGenericInputOptions(int: $intOptionFlatMappedFiltered);
-$functionWithNonGenericInputs(int: $intOptionFlatMappedFiltered->get());
+$check->genericInputOptions(int: $intOptionMappedFiltered);
+$check->nonGenericInputOptions(int: $intOptionMappedFiltered); // @phpstan-ignore argument.type
+$check->nonGenericInputs(int: $intOptionMappedFiltered->get());
+$check->genericInputOptions(int: $intOptionFlatMappedFiltered);
+$check->nonGenericInputOptions(int: $intOptionFlatMappedFiltered);
+$check->nonGenericInputs(int: $intOptionFlatMappedFiltered->get());
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -149,9 +159,17 @@ $arrayOption->orElse(['1', 1]);
 $arrayOption->orElse([1, '1']); // @phpstan-ignore argument.type
 
 // Use filtered complexly generic option as input for function
-$functionWithNonGenericInputs(string: $arrayOptionFiltered->get()[0]);
-$functionWithNonGenericInputs(string: $arrayOptionFiltered->get()[1]); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(int: $arrayOptionFiltered->get()[0]); // @phpstan-ignore argument.type
-$functionWithNonGenericInputs(int: $arrayOptionFiltered->get()[1]);
+$check->nonGenericInputs(string: $arrayOptionFiltered->get()[0]);
+$check->nonGenericInputs(string: $arrayOptionFiltered->get()[1]); // @phpstan-ignore argument.type
+$check->nonGenericInputs(int: $arrayOptionFiltered->get()[0]); // @phpstan-ignore argument.type
+$check->nonGenericInputs(int: $arrayOptionFiltered->get()[1]);
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+// Create covariant option
+$stdClassOption = Optional::of(new stdClass());
+
+// Pass covariant option as input argument
+$check->covariantInputOption(object: $stdClassOption);
 
 // ---------------------------------------------------------------------------------------------------------------------

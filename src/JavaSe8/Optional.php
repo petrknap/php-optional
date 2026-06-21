@@ -9,7 +9,7 @@ use Throwable;
 /**
  * A container object which may or may not contain a non-null value.
  *
- * @template T of mixed type of non-null value
+ * @template-covariant T of mixed type of non-null value
  *
  * @see https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html
  */
@@ -104,18 +104,22 @@ interface Optional
     /**
      * Return the value if present, otherwise return other.
      *
-     * @param T|null $other
+     * @template U of T
      *
-     * @return ($other is T ? T : T|null)
+     * @param U|null $other
+     *
+     * @return ($other is U ? T : T|null)
      */
     public function orElse(mixed $other): mixed;
 
     /**
      * Return the value if present, otherwise invoke provided supplier and return the result of that invocation.
      *
-     * @param (callable(): T)|(callable(): (T|null)) $otherSupplier
+     * @template U of T
      *
-     * @return ($otherSupplier is (callable(): T) ? T : T|null)
+     * @param (callable(): U)|(callable(): (U|null)) $otherSupplier
+     *
+     * @return ($otherSupplier is (callable(): U) ? T : T|null)
      */
     public function orElseGet(callable $otherSupplier): mixed;
 
