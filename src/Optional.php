@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Throwable;
 
 /**
- * @template T of mixed type of non-null value
+ * @template-covariant T of mixed type of non-null value
  *
  * @implements JavaSe8\Optional<T>
  */
@@ -250,6 +250,7 @@ abstract class Optional implements JavaSe8\Optional
         if ($this->value !== null) {
             return $this->value;
         }
+        /** @var T|null $other */
         $other = $otherSupplier();
         return $other === null || static::isSupported($other)
             ? $other
