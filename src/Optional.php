@@ -42,7 +42,9 @@ abstract class Optional implements JavaSe8\Optional
      *
      * @param U $value
      *
-     * @return self<U>
+     * @return (U is null ? never : self<U>)
+     *
+     * @throws InvalidArgumentException
      */
     public static function of(mixed $value): self
     {
@@ -59,7 +61,9 @@ abstract class Optional implements JavaSe8\Optional
      *
      * @param U|false $value
      *
-     * @return self<U>
+     * @return (U is null ? never : self<U>)
+     *
+     * @throws InvalidArgumentException
      */
     public static function ofFalsable(mixed $value): self
     {
@@ -111,7 +115,9 @@ abstract class Optional implements JavaSe8\Optional
      *
      * @param iterable<U> $value
      *
-     * @return self<U>
+     * @return (U is null ? ($value is empty ? self<U> : never) : self<U>)
+     *
+     * @throws InvalidArgumentException
      */
     public static function ofSingle(iterable $value): self
     {

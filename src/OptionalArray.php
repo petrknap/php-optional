@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * @template T of array
+ * @template-covariant T of array
  *
  * @extends Optional<T>
  */
