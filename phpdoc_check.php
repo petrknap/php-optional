@@ -9,7 +9,6 @@ declare(strict_types=1);
 use PetrKnap\Optional\Optional;
 use PetrKnap\Optional\OptionalArray;
 use PetrKnap\Optional\OptionalInt;
-use PetrKnap\Optional\OptionalObject;
 use PetrKnap\Optional\OptionalString;
 
 $check = (new class {
@@ -20,38 +19,54 @@ $check = (new class {
     /**
      * @param Optional<string>|null $string
      * @param Optional<int>|null $int
+     * @param Optional<array<int|string>>|null $array
      */
-    public function genericInputOptions(Optional $string = null, Optional $int = null): void {}
-    public function nonGenericInputOptions(OptionalString $string = null, OptionalInt $int = null): void {}
+    public function genericInputOptions(Optional $string = null, Optional $int = null, Optional $array = null): void {}
+    /**
+     * @param OptionalArray<array<int|string>>|null $array
+     */
+    public function nonGenericInputOptions(OptionalString $string = null, OptionalInt $int = null, OptionalArray $array = null): void {}
     public function nonGenericInputs(string $string = '', int $int = 0): void {}
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Call all factories
+Optional::of('');
+try {
+    Optional::of(null);
+    null; // @phpstan-ignore deadCode.unreachable
+} catch(Throwable) {}
+Optional::ofFalsable('');
+try {
+    Optional::ofFalsable(null);
+    null; // @phpstan-ignore deadCode.unreachable
+} catch(Throwable) {}
+Optional::ofFalsable(false);
+Optional::ofNullable('');
+Optional::ofNullable(null);
+Optional::ofNullable(false);
+Optional::ofSingle(['']);
+try {
+    Optional::ofSingle([null]);
+    null; // @phpstan-ignore deadCode.unreachable
+} catch(Throwable) {}
+Optional::ofSingle([]);
+
+// Call main typed factories
 OptionalString::of('');
 OptionalString::of(null); // @phpstan-ignore argument.type
 OptionalString::of(false); // @phpstan-ignore argument.type
-OptionalString::ofFalsable('');
-OptionalString::ofFalsable(null); // @phpstan-ignore argument.type
-OptionalString::ofFalsable(false);
 OptionalString::ofNullable('');
 OptionalString::ofNullable(null);
 OptionalString::ofNullable(false); // @phpstan-ignore argument.type
-OptionalString::ofSingle(['']);
-OptionalString::ofSingle([null]); // @phpstan-ignore argument.type
-OptionalString::ofSingle([false]); // @phpstan-ignore argument.type
-OptionalString::ofSingle([]);
 
-// Check sub-typed optional factory
-OptionalObject::of(new stdClass());
-OptionalObject::of(new class {
-});
-OptionalObject::of(''); // @phpstan-ignore argument.type, argument.templateType
-OptionalObject\OptionalStdClass::of(new stdClass());
-OptionalObject\OptionalStdClass::of(new class { // @phpstan-ignore argument.type
-});
-OptionalObject\OptionalStdClass::of(''); // @phpstan-ignore argument.type
+// Check return types of factory `of`
+$stringOption = OptionalString::of('0');
+$intOption = OptionalInt::of(0);
+$arrayOption = OptionalArray::of([0, '0']);
+$check->genericInputOptions($stringOption, $intOption, $arrayOption);
+$check->nonGenericInputOptions($stringOption, $intOption, $arrayOption);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
