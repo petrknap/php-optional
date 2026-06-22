@@ -305,7 +305,7 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
-     * @internal overridden by abstracts
+     * @internal overridden by {@see AbstractOptional}
      */
     protected static function isInstanceOfStatic(object $obj): bool
     {

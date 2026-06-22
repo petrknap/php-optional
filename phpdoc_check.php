@@ -54,6 +54,12 @@ try {
 Optional::ofSingle([]);
 
 // Call main typed factories
+OptionalArray::of([]);
+OptionalArray::of(null); // @phpstan-ignore argument.type, argument.templateType
+OptionalArray::of(false); // @phpstan-ignore argument.type, argument.templateType
+OptionalArray::ofNullable([]);
+OptionalArray::ofNullable(null); // @phpstan-ignore argument.templateType
+OptionalArray::ofNullable(false); // @phpstan-ignore argument.type, argument.templateType
 OptionalString::of('');
 OptionalString::of(null); // @phpstan-ignore argument.type
 OptionalString::of(false); // @phpstan-ignore argument.type

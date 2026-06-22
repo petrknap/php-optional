@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * Sets return types to non-generic {@see Optional}
+ * Provides unified type hints and non-generic behavior for concrete {@see Optional} implementations.
  *
  * @phpstan-require-extends Optional
  */
