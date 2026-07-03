@@ -14,8 +14,8 @@ final class OptionalDataObject extends OptionalObject
 {
     use NonGenericOptional;
 
-    protected static function getInstanceOf(): string
+    protected static function isSupported(mixed $value): bool
     {
-        return DataObject::class;
+        return $value instanceof DataObject;
     }
 }

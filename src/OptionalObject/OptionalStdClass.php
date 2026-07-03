@@ -15,8 +15,8 @@ final class OptionalStdClass extends OptionalObject
 {
     use NonGenericOptional;
 
-    protected static function getInstanceOf(): string
+    protected static function isSupported(mixed $value): bool
     {
-        return stdClass::class;
+        return $value instanceof stdClass;
     }
 }

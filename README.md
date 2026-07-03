@@ -38,8 +38,8 @@ namespace PetrKnap\Optional;
  */
 class YourOptional extends OptionalObject {
     use NonGenericOptional;
-    protected static function getInstanceOf(): string {
-        return Some\DataObject::class;
+    protected static function isSupported(mixed $value): bool {
+        return $value instanceof Some\DataObject;
     }
 }
 TypedOptional::register(YourOptional::class); // optional recommended step
