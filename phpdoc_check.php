@@ -7,9 +7,9 @@
 declare(strict_types=1);
 
 use PetrKnap\Optional\Optional;
-use PetrKnap\Optional\OptionalArray;
-use PetrKnap\Optional\OptionalInt;
-use PetrKnap\Optional\OptionalString;
+use PetrKnap\Optional\Some\OptionalArray;
+use PetrKnap\Optional\Some\OptionalInt;
+use PetrKnap\Optional\Some\OptionalString;
 
 $check = (new class {
     /**

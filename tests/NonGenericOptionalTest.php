@@ -15,15 +15,15 @@ final class NonGenericOptionalTest extends TestCase
 
         $value = new Some\DataObject();
 
-        Some\OptionalDataObject::empty();
-        Some\OptionalDataObject::of($value);
-        Some\OptionalDataObject::ofFalsable($value);
-        Some\OptionalDataObject::ofNullable($value);
-        Some\OptionalDataObject::ofSingle([$value]);
+        Some\OptionalObject\OptionalDataObject::empty();
+        Some\OptionalObject\OptionalDataObject::of($value);
+        Some\OptionalObject\OptionalDataObject::ofFalsable($value);
+        Some\OptionalObject\OptionalDataObject::ofNullable($value);
+        Some\OptionalObject\OptionalDataObject::ofSingle([$value]);
     }
 
     #[DataProvider('dataMethodsReturnsSelf')]
-    public function testMethodsReturnsSelf(Some\OptionalDataObject $option): void
+    public function testMethodsReturnsSelf(Some\OptionalObject\OptionalDataObject $option): void
     {
         self::expectNotToPerformAssertions(); // it's checked natively by PHP
 
@@ -34,8 +34,8 @@ final class NonGenericOptionalTest extends TestCase
     public static function dataMethodsReturnsSelf(): array
     {
         return [
-            'empty' => [Some\OptionalDataObject::empty()],
-            'some' => [Some\OptionalDataObject::of(new Some\DataObject())],
+            'empty' => [Some\OptionalObject\OptionalDataObject::empty()],
+            'some' => [Some\OptionalObject\OptionalDataObject::of(new Some\DataObject())],
         ];
     }
 }

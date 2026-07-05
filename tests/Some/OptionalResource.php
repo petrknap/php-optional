@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PetrKnap\Optional;
+namespace PetrKnap\Optional\Some;
+
+use PetrKnap\Optional\Exception;
+use PetrKnap\Optional\NonGenericOptional;
+use PetrKnap\Optional\Optional;
+use PetrKnap\Optional\TypedOptional;
 
 /**
  * @extends Optional<resource>

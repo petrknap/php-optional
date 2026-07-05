@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PetrKnap\Optional;
+namespace PetrKnap\Optional\Some;
+
+use PetrKnap\Optional\NonGenericOptional;
+use PetrKnap\Optional\Optional;
 
 /**
  * @extends Optional<string>

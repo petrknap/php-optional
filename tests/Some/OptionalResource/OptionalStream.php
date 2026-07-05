@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PetrKnap\Optional\OptionalResource;
+namespace PetrKnap\Optional\Some\OptionalResource;
 
 use PetrKnap\Optional\NonGenericOptional;
-use PetrKnap\Optional\OptionalResource;
+use PetrKnap\Optional\Some\OptionalResource;
 
 final class OptionalStream extends OptionalResource
 {

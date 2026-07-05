@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PetrKnap\Optional;
+namespace PetrKnap\Optional\Some;
+
+use PetrKnap\Optional\GenericOptional;
+use PetrKnap\Optional\Optional;
 
 /**
  * @template-covariant T of array

@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PetrKnap\Optional;
+namespace PetrKnap\Optional\Some;
+
+use PetrKnap\Optional\AbstractOptional;
+use PetrKnap\Optional\Optional;
+use PetrKnap\Optional\TypedOptional;
 
 /**
  * @template T of object
