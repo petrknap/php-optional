@@ -12,15 +12,6 @@ final class TypedOptional
 
     /** @var array<class-string> must be iterated in reverse order */
     private static array $typedOptionals = [
-        OptionalArray::class,
-        OptionalBool::class,
-        OptionalFloat::class,
-        OptionalInt::class,
-        OptionalObject::class,
-        OptionalObject\OptionalStdClass::class,
-        OptionalResource::class,
-        OptionalResource\OptionalStream::class,
-        OptionalString::class,
     ];
 
     /**

@@ -16,13 +16,13 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 namespace PetrKnap\Optional;
 
-/** @var Optional<string> $optionalString */
-$optionalString = Optional::of('data');
-if ($optionalString->isPresent()) {
-    echo $optionalString->get();
+/** @var Optional<string> $stringOption */
+$stringOption = Optional::of('data');
+if ($stringOption->isPresent()) {
+    echo $stringOption->get();
 }
 
-OptionalResource::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
+Optional::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
     fwrite($tmpFile, 'data');
     fclose($tmpFile);
 }, else: fn () => print('tmpfile() failed'));
@@ -34,9 +34,9 @@ OptionalResource::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
 namespace PetrKnap\Optional;
 
 /**
- * @extends OptionalObject<Some\DataObject>
+ * @extends Optional<Some\DataObject>
  */
-class YourOptional extends OptionalObject {
+class YourOptional extends Optional {
     use NonGenericOptional;
     protected static function isSupported(mixed $value): bool {
         return $value instanceof Some\DataObject;

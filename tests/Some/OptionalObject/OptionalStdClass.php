@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PetrKnap\Optional\OptionalObject;
+namespace PetrKnap\Optional\Some\OptionalObject;
 
 use PetrKnap\Optional\NonGenericOptional;
-use PetrKnap\Optional\OptionalObject;
+use PetrKnap\Optional\Some\OptionalObject;
 use stdClass;
 
 /**

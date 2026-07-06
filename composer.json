@@ -7,7 +7,10 @@
   "autoload-dev": {
     "psr-4": {
       "PetrKnap\\Optional\\": "tests"
-    }
+    },
+    "files": [
+      "tests/Some/typed_optionals.php"
+    ]
   },
   "config": {
     "allow-plugins": false,

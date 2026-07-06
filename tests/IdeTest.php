@@ -16,7 +16,7 @@ final class IdeTest extends TestCase
         self::expectNotToPerformAssertions();
 
         $instance = new Some\DataObject();
-        $optional = Some\OptionalDataObject::of($instance);
+        $optional = Some\OptionalObject\OptionalDataObject::of($instance);
 
         if ($optional->isPresent()) {
             $optional->get()->tryIt();  # <--- HERE
@@ -28,7 +28,7 @@ final class IdeTest extends TestCase
 
         $optional->filter(static fn (): bool => true)->orElseThrow()->tryIt();  # <--- HERE
 
-        Optional::of(0)->flatMap(static fn (): Some\OptionalDataObject => $optional)->orElseThrow()->tryIt();  # <--- HERE
+        Optional::of(0)->flatMap(static fn (): Some\OptionalObject\OptionalDataObject => $optional)->orElseThrow()->tryIt();  # <--- HERE
         Optional::of(0)->map(static fn (): Some\DataObject => $instance)->orElseThrow()->tryIt();  # <--- HERE
     }
 }

@@ -28,18 +28,18 @@ final class TypedOptionalsTest extends TestCase
     {
         return [
             // Scalars
-            'bool' => [OptionalBool::class, true],
-            'float' => [OptionalFloat::class, .1],
-            'int' => [OptionalInt::class, 1],
-            'string' => [OptionalString::class, ''],
+            'bool' => [Some\OptionalBool::class, true],
+            'float' => [Some\OptionalFloat::class, .1],
+            'int' => [Some\OptionalInt::class, 1],
+            'string' => [Some\OptionalString::class, ''],
             // Non-scalars
-            'array' => [OptionalArray::class, []],
-            'object' => [OptionalObject::class, new stdClass(), ['object(stdClass)']],
-            'resource' => [OptionalResource::class, fopen('php://memory', 'rw'), ['resource(stream)']],
+            'array' => [Some\OptionalArray::class, []],
+            'object' => [Some\OptionalObject::class, new stdClass(), ['object(stdClass)']],
+            'resource' => [Some\OptionalResource::class, fopen('php://memory', 'rw'), ['resource(stream)']],
             // Objects
-            'object(stdClass)' => [OptionalObject\OptionalStdClass::class, new stdClass(), ['object']],
+            'object(stdClass)' => [Some\OptionalObject\OptionalStdClass::class, new stdClass(), ['object']],
             // Resources
-            'resource(stream)' => [OptionalResource\OptionalStream::class, fopen('php://memory', 'rw'), ['resource']],
+            'resource(stream)' => [Some\OptionalResource\OptionalStream::class, fopen('php://memory', 'rw'), ['resource']],
         ];
     }
 
@@ -69,11 +69,11 @@ final class TypedOptionalsTest extends TestCase
 
     public function testTwoEmptiesOfSameTypeAreEqual(): void
     {
-        self::assertTrue(OptionalString::empty()->equals(OptionalString::empty()));
+        self::assertTrue(Some\OptionalString::empty()->equals(Some\OptionalString::empty()));
     }
 
     public function testTwoEmptiesOfDifferentTypesAreNotEqual(): void
     {
-        self::assertFalse(OptionalString::empty()->equals(OptionalBool::empty()));
+        self::assertFalse(Some\OptionalString::empty()->equals(Some\OptionalBool::empty()));
     }
 }

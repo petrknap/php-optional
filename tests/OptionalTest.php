@@ -128,14 +128,14 @@ final class OptionalTest extends TestCase
                 'optional (other object)' => Optional::of($otherObject),
                 'optional (different object)' => Optional::of($differentObject),
                 // registered typed optional
-                'registered typed optional (empty)' => OptionalString::empty(),
-                'registered typed optional (value)' => OptionalString::of(self::VALUE),
-                'registered typed optional (other value)' => OptionalString::of(self::OTHER),
+                'registered typed optional (empty)' => Some\OptionalString::empty(),
+                'registered typed optional (value)' => Some\OptionalString::of(self::VALUE),
+                'registered typed optional (other value)' => Some\OptionalString::of(self::OTHER),
                 // unregistered typed optional
-                'unregistered typed optional (empty)' => Some\OptionalDataObject::empty(),
-                'unregistered typed optional (same object)' => Some\OptionalDataObject::of($sameObject),
-                'unregistered typed optional (equal object)' => Some\OptionalDataObject::of($equalObject),
-                'unregistered typed optional (other object)' => Some\OptionalDataObject::of($otherObject),
+                'unregistered typed optional (empty)' => Some\OptionalObject\OptionalDataObject::empty(),
+                'unregistered typed optional (same object)' => Some\OptionalObject\OptionalDataObject::of($sameObject),
+                'unregistered typed optional (equal object)' => Some\OptionalObject\OptionalDataObject::of($equalObject),
+                'unregistered typed optional (other object)' => Some\OptionalObject\OptionalDataObject::of($otherObject),
             ];
             foreach ($set as $name => $value) {
                 $shouldEqual = in_array($name, $equals);
@@ -177,28 +177,28 @@ final class OptionalTest extends TestCase
             ),
             ...$set(
                 'registered typed optional (empty)',
-                OptionalString::empty(),
+                Some\OptionalString::empty(),
                 ['null', 'registered typed optional (empty)'],
             ),
             ...$set(
                 'registered typed optional (value)', // = optional (value)
-                OptionalString::of(self::VALUE),
+                Some\OptionalString::of(self::VALUE),
                 ['value', 'optional (value)', 'registered typed optional (value)'],
             ),
             ...$set(
                 'unregistered typed optional (empty)',
-                Some\OptionalDataObject::empty(),
+                Some\OptionalObject\OptionalDataObject::empty(),
                 ['null', 'unregistered typed optional (empty)'],
             ),
             ...$set(
                 'unregistered typed optional (object)',
-                Some\OptionalDataObject::of($object),
+                Some\OptionalObject\OptionalDataObject::of($object),
                 ['same object', 'equal object', 'unregistered typed optional (same object)', 'unregistered typed optional (equal object)'],
                 false,
             ),
             ...$set(
                 'unregistered typed optional (object)',
-                Some\OptionalDataObject::of($object),
+                Some\OptionalObject\OptionalDataObject::of($object),
                 ['same object', 'unregistered typed optional (same object)'],
                 true,
             ),
@@ -302,7 +302,7 @@ final class OptionalTest extends TestCase
     public static function dataMethodMapWorks(): array
     {
         return self::makeDataSet([
-            [OptionalString::of(self::VALUE . 'x')],
+            [Some\OptionalString::of(self::VALUE . 'x')],
             [Optional::empty()],
         ]);
     }
@@ -319,7 +319,7 @@ final class OptionalTest extends TestCase
             [self::OTHER, self::VALUE],
             [self::OTHER, self::OTHER],
         ]) + [
-            'typed null' => [OptionalString::empty(), null, null],
+            'typed null' => [Some\OptionalString::empty(), null, null],
         ];
     }
 
@@ -335,7 +335,7 @@ final class OptionalTest extends TestCase
             [self::OTHER, self::VALUE],
             [self::OTHER, self::OTHER],
         ]) + [
-            'typed null' => [OptionalString::empty(), null, null],
+            'typed null' => [Some\OptionalString::empty(), null, null],
         ];
     }
 

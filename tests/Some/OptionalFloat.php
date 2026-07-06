@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace PetrKnap\Optional\Some;
 
 use PetrKnap\Optional\NonGenericOptional;
-use PetrKnap\Optional\OptionalObject;
+use PetrKnap\Optional\Optional;
 
 /**
- * @extends OptionalObject<DataObject>
+ * @extends Optional<float>
  */
-final class OptionalDataObject extends OptionalObject
+final class OptionalFloat extends Optional
 {
     use NonGenericOptional;
 
     protected static function isSupported(mixed $value): bool
     {
-        return $value instanceof DataObject;
+        return is_float($value);
     }
 }
