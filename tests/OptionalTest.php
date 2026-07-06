@@ -16,6 +16,47 @@ final class OptionalTest extends TestCase
     private const VALUE = 'value';
     private const OTHER = 'other';
 
+    /**
+     * @template U of mixed
+     *
+     * @param class-string<Optional<U>> $className
+     * @param U $value
+     */
+    #[DataProvider('dataFactoriesReturnsSelf')]
+    public function testFactoriesReturnsSelf(string $className, mixed $value): void
+    {
+        self::assertInstanceOf($className, $className::empty());
+        self::assertInstanceOf($className, $className::of($value));
+        self::assertInstanceOf($className, $className::ofFalsable($value));
+        self::assertInstanceOf($className, $className::ofNullable($value));
+        self::assertInstanceOf($className, $className::ofSingle([$value]));
+    }
+
+    public static function dataFactoriesReturnsSelf(): array
+    {
+        return [
+            Optional::class => [Optional::class, self::VALUE],
+            AbstractOptional::class => [Some\OptionalObject::class, new stdClass()],
+            GenericOptional::class => [Some\OptionalArray::class, []],
+            NonGenericOptional::class => [Some\OptionalString::class, ''],
+        ];
+    }
+
+    #[DataProvider('dataMethodsReturnsSelf')]
+    public function testMethodsReturnsSelf(Optional $option): void
+    {
+        self::assertInstanceOf($option::class, $option->filter(static fn (): bool => true));
+        self::assertInstanceOf($option::class, $option->filter(static fn (): bool => false));
+    }
+
+    public static function dataMethodsReturnsSelf(): array
+    {
+        return array_map(
+            static fn (array $i): array => [$i[0]::of($i[1])],
+            self::dataFactoriesReturnsSelf(),
+        );
+    }
+
     public function testMethodEmptyReturnsEmptyOptional(): void
     {
         self::assertFalse(Optional::empty()->isPresent());

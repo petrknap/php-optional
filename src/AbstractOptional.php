@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * Provides internal plumbing and instantiation logic for abstract {@see Optional} implementations.
+ * Provides internal logic for abstract {@see Optional}
  *
  * @template-covariant T of mixed type of non-null value
  *

@@ -8,6 +8,8 @@ use PetrKnap\Optional\NonGenericOptional;
 use PetrKnap\Optional\Optional;
 
 /**
+ * Example of using the {@see NonGenericOptional} trait
+ *
  * @extends Optional<string>
  */
 final class OptionalString extends Optional

@@ -9,7 +9,9 @@ use PetrKnap\Optional\Optional;
 use PetrKnap\Optional\TypedOptional;
 
 /**
- * @template T of object
+ * Example of using the {@see AbstractOptional} trait
+ *
+ * @template-covariant T of object
  *
  * @extends Optional<T>
  */
