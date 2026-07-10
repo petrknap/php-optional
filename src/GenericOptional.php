@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
- * Provides strict type hints and generic behavior for concrete {@see Optional} implementations.
+ * Provides type hints for generic {@see Optional}
  *
  * @template-covariant T of mixed type of non-null value
  *

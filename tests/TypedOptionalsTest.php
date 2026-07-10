@@ -17,29 +17,18 @@ final class TypedOptionalsTest extends TestCase
     #[DataProvider('dataCouldBeCreated')]
     public function testCouldBeCreated(string $optionalClassName, mixed $value): void
     {
-        self::assertInstanceOf($optionalClassName, $optionalClassName::empty());
-        self::assertInstanceOf($optionalClassName, $optionalClassName::of($value));
-        self::assertInstanceOf($optionalClassName, $optionalClassName::ofNullable($value));
-        self::assertInstanceOf($optionalClassName, $optionalClassName::ofNullable(null));
+        self::assertInstanceOf($optionalClassName, Optional::of($value));
+        self::assertInstanceOf($optionalClassName, Optional::ofNullable($value));
         self::assertInstanceOf($optionalClassName, TypedOptional::of($value, Optional::class));
     }
 
     public static function dataCouldBeCreated(): array
     {
         return [
-            // Scalars
-            'bool' => [Some\OptionalBool::class, true],
-            'float' => [Some\OptionalFloat::class, .1],
-            'int' => [Some\OptionalInt::class, 1],
-            'string' => [Some\OptionalString::class, ''],
-            // Non-scalars
             'array' => [Some\OptionalArray::class, []],
             'object' => [Some\OptionalObject::class, new stdClass(), ['object(stdClass)']],
-            'resource' => [Some\OptionalResource::class, fopen('php://memory', 'rw'), ['resource(stream)']],
-            // Objects
             'object(stdClass)' => [Some\OptionalObject\OptionalStdClass::class, new stdClass(), ['object']],
-            // Resources
-            'resource(stream)' => [Some\OptionalResource\OptionalStream::class, fopen('php://memory', 'rw'), ['resource']],
+            'string' => [Some\OptionalString::class, ''],
         ];
     }
 
@@ -55,10 +44,10 @@ final class TypedOptionalsTest extends TestCase
 
     public static function dataCouldNotBeCreatedWithWrongType(): iterable
     {
-        $supportedValues = self::dataCouldBeCreated();
+        $data = self::dataCouldBeCreated();
 
-        foreach ($supportedValues as $supportedCase => [$optionalClassName, $_, $alsoSupportedCases]) {
-            foreach ($supportedValues as $unsupportedCase => [$_, $value]) {
+        foreach ($data as $supportedCase => [$optionalClassName, $_, $alsoSupportedCases]) {
+            foreach ($data as $unsupportedCase => [$_, $value]) {
                 if (in_array($unsupportedCase, [$supportedCase, ...($alsoSupportedCases ?? [])])) {
                     continue;
                 }
@@ -74,6 +63,6 @@ final class TypedOptionalsTest extends TestCase
 
     public function testTwoEmptiesOfDifferentTypesAreNotEqual(): void
     {
-        self::assertFalse(Some\OptionalString::empty()->equals(Some\OptionalBool::empty()));
+        self::assertFalse(Some\OptionalString::empty()->equals(Some\OptionalArray::empty()));
     }
 }

@@ -8,6 +8,8 @@ use PetrKnap\Optional\GenericOptional;
 use PetrKnap\Optional\Optional;
 
 /**
+ * Example of using the {@see GenericOptional} trait
+ *
  * @template-covariant T of array
  *
  * @extends Optional<T>
