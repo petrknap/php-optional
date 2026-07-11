@@ -20,8 +20,9 @@ final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
     public static function getExpectedOutputsOfPhpExamples(): iterable
     {
         return [
-            'examples' => 'data',
-            'create-and-use-your-own-typed-optional' => '',
+            'Basic usage' => 'data',
+            'Creating your own typed optional / Quick Overview / NonGenericOptional' => '',
+            'Creating your own typed optional / Type registration' => self::OUTPUT_IN_MARKDOWN,
         ];
     }
 }

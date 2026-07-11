@@ -11,10 +11,11 @@
 
 It is an easy way to make sure that everyone has to check if they have (not) received a `null`.
 
-## Examples
+
+## Basic usage
 
 ```php
-namespace PetrKnap\Optional;
+use PetrKnap\Optional\Optional;
 
 /** @var Optional<string> $stringOption */
 $stringOption = Optional::of('data');
@@ -28,34 +29,49 @@ Optional::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
 }, else: fn () => print('tmpfile() failed'));
 ```
 
-### Create and use your own typed optional
 
+## Creating your own typed optional
+
+The library provides specialized traits to help you implement strictly typed wrappers with full static analysis support.
+
+### Quick Overview
+
+1. **[`NonGenericOptional` trait](./src/NonGenericOptional.php)** for fixed specific types like `bool` or `string` (see [`OptionalString` class](./tests/Some/OptionalString.php))
+   ```php
+   use PetrKnap\Optional\Optional;
+   use PetrKnap\Optional\NonGenericOptional;
+
+   /** @extends Optional<bool> */
+   final class OptionalBool extends Optional
+   {
+       use NonGenericOptional;
+
+       protected static function isSupported(mixed $value): bool
+       {
+           return is_bool($value);
+       }
+   }
+   ```
+2. **[`GenericOptional` trait](./src/GenericOptional.php)** for generic structures like `array` (see [`OptionalArray` class](./tests/Some/OptionalArray.php))
+3. **[`AbstractOptional` trait](./src/AbstractOptional.php)** for extendable factory optionals (use this when you need a base class for other typed optionals, see [`OptionalObject` class](./tests/Some/OptionalObject.php))
+
+### Type registration
+
+You can register your custom typed optionals into [`TypedOptional` helper](./src/TypedOptional.php).
+Once registered, calling the base [`Optional` class](./src/Optional.php) will automatically look up and return the correct specific subclass if the value matches its criteria.
 ```php
-namespace PetrKnap\Optional;
+use PetrKnap\Optional\TypedOptional;
+use PetrKnap\Optional\Optional;
 
-/**
- * @extends Optional<Some\DataObject>
- */
-class YourOptional extends Optional {
-    use NonGenericOptional;
-    protected static function isSupported(mixed $value): bool {
-        return $value instanceof Some\DataObject;
-    }
-}
-TypedOptional::register(YourOptional::class); // optional recommended step
+TypedOptional::register(OptionalBool::class);
 
-function your_strong_typed_function(YourOptional $input): YourOptional {
-    return YourOptional::empty();
-}
-
-/**
- * @param Optional<Some\DataObject> $input
- *
- * @return Optional<Some\DataObject>
- */
-function your_weak_typed_function(Optional $input): Optional {
-    return YourOptional::empty();
-}
+printf(
+    "Class name of optional which holds `true` is `%s`.\n",
+    get_class(Optional::of(true)),
+);
+```
+```
+Class name of optional which holds `true` is `OptionalBool`.
 ```
 
 ---
