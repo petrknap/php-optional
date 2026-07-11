@@ -36,7 +36,6 @@ abstract class OptionalObject extends Optional
 
             protected static function isSupported(mixed $value): bool
             {
-                TypedOptional::triggerNotice(OptionalObject::class . ' does not check the instance of object.');
                 return is_object($value);
             }
         };
