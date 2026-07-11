@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
+ * @deprecated will be removed, use {@see Optional}
+ *
  * @extends Optional<int>
  */
 final class OptionalInt extends Optional

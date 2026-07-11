@@ -6,6 +6,9 @@ namespace PetrKnap\Optional\Exception;
 
 use RuntimeException;
 
+/**
+ * @deprecated will be removed
+ */
 final class CouldNotFindTypedOptionalForValue extends RuntimeException implements TypedOptionalException
 {
     public function __construct(

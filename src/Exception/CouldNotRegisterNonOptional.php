@@ -6,6 +6,9 @@ namespace PetrKnap\Optional\Exception;
 
 use RuntimeException;
 
+/**
+ * @deprecated will be removed
+ */
 final class CouldNotRegisterNonOptional extends RuntimeException implements TypedOptionalException
 {
     /**

@@ -6,6 +6,8 @@ namespace PetrKnap\Optional\Exception;
 
 /**
  * @todo extend {@see Exception}, not {@see OptionalException}
+ *
+ * @deprecated will be removed
  */
 interface TypedOptionalException extends OptionalException
 {
