@@ -98,10 +98,14 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
+     * @deprecated $strict parameter will be replaced by $byReference and method logic will be refactored
+     *
+     * @param ($this is JavaSe8\Optional<object> ? ($obj is JavaSe8\Optional<object> ? bool : false) : false) $byReference
      * @param bool $strict if `true` then the value, if the value is an object, will be compared as a reference
      */
-    public function equals(mixed $obj, bool $strict = false): bool
+    public function equals(mixed $obj, bool $byReference = false, bool $strict = false): bool
     {
+        $strict = $strict || $byReference;
         if (!($obj instanceof JavaSe8\Optional)) {
             try {
                 $obj = static::ofNullable($obj);
