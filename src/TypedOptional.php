@@ -8,9 +8,8 @@ use InvalidArgumentException;
 
 final class TypedOptional
 {
-    /** @var array<class-string> must be iterated in reverse order */
-    private static array $typedOptionals = [
-    ];
+    /** @var array<class-string> stored in reverse order, see {@see self::register()} */
+    private static array $typedOptionals = [];
 
     /**
      * @internal use {@see Optional::of()}
@@ -27,7 +26,7 @@ final class TypedOptional
     public static function of(mixed $value, string $subclassOf): Optional
     {
         /** @var class-string<Optional<T>> $typedOptional */
-        foreach (array_reverse(self::$typedOptionals) as $typedOptional) {
+        foreach (self::$typedOptionals as $typedOptional) {
             if ($typedOptional === $subclassOf || !is_a($typedOptional, $subclassOf, allow_string: true)) {
                 continue;
             }
@@ -49,6 +48,6 @@ final class TypedOptional
         if (!is_a($typedOptionalClassName, Optional::class, allow_string: true)) {
             throw new Exception\CouldNotRegisterNonOptional($typedOptionalClassName);
         }
-        self::$typedOptionals[] = $typedOptionalClassName;
+        array_unshift(self::$typedOptionals, $typedOptionalClassName);
     }
 }
