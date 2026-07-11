@@ -100,7 +100,6 @@ abstract class Optional implements JavaSe8\Optional
 
                 protected static function isSupported(mixed $value): bool
                 {
-                    TypedOptional::triggerNotice(Optional::class . ' does not check the type of value.');
                     return true;
                 }
             };
@@ -317,9 +316,6 @@ abstract class Optional implements JavaSe8\Optional
      */
     abstract protected static function isSupported(mixed $value): bool;
 
-    /**
-     * @internal you should use {@see TypedOptional::triggerNotice()}
-     */
     private static function triggerNotice(string $message): void
     {
         trigger_error(
