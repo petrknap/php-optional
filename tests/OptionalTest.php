@@ -13,8 +13,8 @@ use stdClass;
 
 final class OptionalTest extends TestCase
 {
-    private const VALUE = 'value';
-    private const OTHER = 'other';
+    private const VALUE = true;
+    private const OTHER = false;
 
     /**
      * @template U of mixed
@@ -36,9 +36,8 @@ final class OptionalTest extends TestCase
     {
         return [
             Optional::class => [Optional::class, self::VALUE],
-            AbstractOptional::class => [Some\OptionalObject::class, new stdClass()],
             GenericOptional::class => [Some\OptionalArray::class, []],
-            NonGenericOptional::class => [Some\OptionalString::class, ''],
+            NonGenericOptional::class => [Some\OptionalBool::class, false],
         ];
     }
 
@@ -133,7 +132,7 @@ final class OptionalTest extends TestCase
     }
 
     #[DataProvider('dataMethodEqualsWorks')]
-    public function testMethodEqualsWorks(Optional $optional, mixed $obj, bool|null $isStrict, bool $expectedResult): void
+    public function testMethodEqualsWorks(Optional $optional, mixed $obj, ?bool $isStrict, bool $expectedResult): void
     {
         self::assertSame($expectedResult, match ($isStrict === null) {
             true => $optional->equals($obj),
@@ -144,7 +143,7 @@ final class OptionalTest extends TestCase
     public static function dataMethodEqualsWorks(): array
     {
         $object = new Some\DataObject(self::VALUE);
-        $set = static function (string $key, Optional $optional, array $equals, bool|null $isStrict = null) use ($object): iterable {
+        $set = static function (string $key, Optional $optional, array $equals, ?bool $isStrict = null) use ($object): iterable {
             $sameObject = $object;
             $equalObject = new Some\DataObject(self::VALUE);
             $otherObject = new Some\DataObject(self::OTHER);
@@ -168,15 +167,10 @@ final class OptionalTest extends TestCase
                 'optional (equal object)' => Optional::of($equalObject),
                 'optional (other object)' => Optional::of($otherObject),
                 'optional (different object)' => Optional::of($differentObject),
-                // registered typed optional
-                'registered typed optional (empty)' => Some\OptionalString::empty(),
-                'registered typed optional (value)' => Some\OptionalString::of(self::VALUE),
-                'registered typed optional (other value)' => Some\OptionalString::of(self::OTHER),
-                // unregistered typed optional
-                'unregistered typed optional (empty)' => Some\OptionalObject\OptionalDataObject::empty(),
-                'unregistered typed optional (same object)' => Some\OptionalObject\OptionalDataObject::of($sameObject),
-                'unregistered typed optional (equal object)' => Some\OptionalObject\OptionalDataObject::of($equalObject),
-                'unregistered typed optional (other object)' => Some\OptionalObject\OptionalDataObject::of($otherObject),
+                // some optionals
+                'some bool optional (empty)' => Some\OptionalBool::empty(),
+                'some bool optional (value)' => Some\OptionalBool::of(self::VALUE),
+                'some bool optional (other value)' => Some\OptionalBool::of(self::OTHER),
             ];
             foreach ($set as $name => $value) {
                 $shouldEqual = in_array($name, $equals);
@@ -197,51 +191,34 @@ final class OptionalTest extends TestCase
             ...$set(
                 'optional (empty)', // ~ typeless (empty)
                 Optional::empty(),
-                ['null', 'optional (empty)', 'registered typed optional (empty)', 'unregistered typed optional (empty)'],
+                ['optional (empty)', 'some bool optional (empty)'],
             ),
             ...$set(
-                'optional (value)', // = registered typed optional (value)
+                'optional (value)', // ~ typeless (value)
                 Optional::of(self::VALUE),
-                ['value', 'optional (value)', 'registered typed optional (value)'],
+                ['optional (value)', 'some bool optional (value)'],
             ),
             ...$set(
-                'optional (object)', // ~ unregistered typed optional (object)
+                'optional (object)',
                 Optional::of($object),
-                ['same object', 'equal object', 'optional (same object)', 'optional (equal object)', 'unregistered typed optional (same object)', 'unregistered typed optional (equal object)'],
-                false,
+                ['optional (same object)', 'optional (equal object)'],
+                isStrict: false,
             ),
             ...$set(
-                'optional (object)', // ~ unregistered typed optional (object)
+                'optional (object)',
                 Optional::of($object),
-                ['same object', 'optional (same object)', 'unregistered typed optional (same object)'],
-                true,
+                ['optional (same object)'],
+                isStrict: true,
             ),
             ...$set(
-                'registered typed optional (empty)',
-                Some\OptionalString::empty(),
-                ['null', 'registered typed optional (empty)'],
+                'some bool optional (empty)',
+                Some\OptionalBool::empty(),
+                ['optional (empty)', 'some bool optional (empty)'],
             ),
             ...$set(
-                'registered typed optional (value)', // = optional (value)
-                Some\OptionalString::of(self::VALUE),
-                ['value', 'optional (value)', 'registered typed optional (value)'],
-            ),
-            ...$set(
-                'unregistered typed optional (empty)',
-                Some\OptionalObject\OptionalDataObject::empty(),
-                ['null', 'unregistered typed optional (empty)'],
-            ),
-            ...$set(
-                'unregistered typed optional (object)',
-                Some\OptionalObject\OptionalDataObject::of($object),
-                ['same object', 'equal object', 'unregistered typed optional (same object)', 'unregistered typed optional (equal object)'],
-                false,
-            ),
-            ...$set(
-                'unregistered typed optional (object)',
-                Some\OptionalObject\OptionalDataObject::of($object),
-                ['same object', 'unregistered typed optional (same object)'],
-                true,
+                'some bool optional (value)',
+                Some\OptionalBool::of(self::VALUE),
+                ['optional (value)', 'some bool optional (value)'],
             ),
         ];
     }
@@ -251,7 +228,7 @@ final class OptionalTest extends TestCase
     {
         self::assertEquals(
             $expected ? $optional : $optional::empty(),
-            $optional->filter(static fn (string $value): bool => $value === self::VALUE),
+            $optional->filter(static fn (bool $value): bool => $value === self::VALUE),
         );
     }
 
@@ -266,19 +243,19 @@ final class OptionalTest extends TestCase
     #[DataProvider('dataMethodFlatMapWorks')]
     public function testMethodFlatMapWorks(Optional $optional, Optional $expectedResult): void
     {
-        self::assertTrue($expectedResult->equals($optional->flatMap(fn (string $v): Optional => Optional::of($v . 'x'))));
+        self::assertTrue($expectedResult->equals($optional->flatMap(fn (bool $v): Optional => Optional::of(!$v))));
     }
 
     public static function dataMethodFlatMapWorks(): array
     {
         return self::makeDataSet([
-            [Optional::of(self::VALUE . 'x')],
+            [Optional::of(!self::VALUE)], // @phpstan-ignore booleanNot.alwaysFalse
             [Optional::empty()],
         ]);
     }
 
     #[DataProvider('dataMethodGetWorks')]
-    public function testMethodGetWorks(Optional $optional, ?string $expectedValue, ?string $expectedException): void
+    public function testMethodGetWorks(Optional $optional, ?bool $expectedValue, ?string $expectedException): void
     {
         if ($expectedException !== null) {
             self::expectException($expectedException);
@@ -299,7 +276,7 @@ final class OptionalTest extends TestCase
     {
         $invoked = null;
         $optional->ifPresent(
-            consumer: static function (string $value) use (&$invoked) {
+            consumer: static function (bool $value) use (&$invoked) {
                 self::assertSame(self::VALUE, $value);
                 $invoked = 'consumer';
             },
@@ -337,19 +314,19 @@ final class OptionalTest extends TestCase
     #[DataProvider('dataMethodMapWorks')]
     public function testMethodMapWorks(Optional $optional, mixed $expectedResult): void
     {
-        self::assertTrue($expectedResult->equals($optional->map(fn (string $v): string => $v . 'x')));
+        self::assertTrue($expectedResult->equals($optional->map(fn (bool $v): bool => !$v)));
     }
 
     public static function dataMethodMapWorks(): array
     {
         return self::makeDataSet([
-            [Some\OptionalString::of(self::VALUE . 'x')],
+            [Some\OptionalBool::of(!self::VALUE)], // @phpstan-ignore booleanNot.alwaysFalse
             [Optional::empty()],
         ]);
     }
 
     #[DataProvider('dataMethodOrElseWorks')]
-    public function testMethodOrElseWorks(Optional $optional, string|null $orValue, string|null $expectedValue): void
+    public function testMethodOrElseWorks(Optional $optional, bool|null $orValue, bool|null $expectedValue): void
     {
         self::assertSame($expectedValue, $optional->orElse($orValue));
     }
@@ -360,14 +337,14 @@ final class OptionalTest extends TestCase
             [self::OTHER, self::VALUE],
             [self::OTHER, self::OTHER],
         ]) + [
-            'typed null' => [Some\OptionalString::empty(), null, null],
+            'typed null' => [Some\OptionalBool::empty(), null, null],
         ];
     }
 
     #[DataProvider('dataMethodOrElseGetWorks')]
-    public function testMethodOrElseGetWorks(Optional $optional, string|null $orValue, string|null $expectedValue): void
+    public function testMethodOrElseGetWorks(Optional $optional, bool|null $orValue, bool|null $expectedValue): void
     {
-        self::assertSame($expectedValue, $optional->orElseGet(static fn(): string|null => $orValue));
+        self::assertSame($expectedValue, $optional->orElseGet(static fn(): bool|null => $orValue));
     }
 
     public static function dataMethodOrElseGetWorks(): array
@@ -376,7 +353,7 @@ final class OptionalTest extends TestCase
             [self::OTHER, self::VALUE],
             [self::OTHER, self::OTHER],
         ]) + [
-            'typed null' => [Some\OptionalString::empty(), null, null],
+            'typed null' => [Some\OptionalBool::empty(), null, null],
         ];
     }
 
@@ -385,7 +362,7 @@ final class OptionalTest extends TestCase
         Optional $optional,
         null|string|callable $exceptionProvider,
         null|string $message,
-        ?string $expectedValue,
+        ?bool $expectedValue,
         ?string $expectedException,
         ?string $expectedExceptionMessage
     ): void {

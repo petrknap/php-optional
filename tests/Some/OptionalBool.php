@@ -10,14 +10,14 @@ use PetrKnap\Optional\Optional;
 /**
  * Example of using the {@see NonGenericOptional} trait
  *
- * @extends Optional<string>
+ * @extends Optional<bool>
  */
-final class OptionalString extends Optional
+final class OptionalBool extends Optional
 {
     use NonGenericOptional;
 
     protected static function isSupported(mixed $value): bool
     {
-        return is_string($value);
+        return is_bool($value);
     }
 }

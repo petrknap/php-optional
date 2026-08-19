@@ -17,7 +17,6 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 use PetrKnap\Optional\Optional;
 
-/** @var Optional<string> $stringOption */
 $stringOption = Optional::of('data');
 if ($stringOption->isPresent()) {
     echo $stringOption->get();
@@ -30,49 +29,63 @@ Optional::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
 ```
 
 
-## Creating your own typed optional
+## Creating your own optional
 
-The library provides specialized traits to help you implement strictly typed wrappers with full static analysis support.
+The library provides specialized traits to help you implement your own wrappers with full static analysis support:
 
-### Quick Overview
-
-1. **[`NonGenericOptional` trait](./src/NonGenericOptional.php)** for fixed specific types like `bool` or `string` (see [`OptionalString` class](./tests/Some/OptionalString.php))
+- **[`GenericOptional` trait](./src/GenericOptional.php)** for generic structures like `object` and `array` (see [`OptionalArray` class](./tests/Some/OptionalArray.php))
    ```php
    use PetrKnap\Optional\Optional;
-   use PetrKnap\Optional\NonGenericOptional;
+   use PetrKnap\Optional\GenericOptional;
 
-   /** @extends Optional<bool> */
-   final class OptionalBool extends Optional
+   /**
+    * @template-covariant T of Model
+    *
+    * @extends Optional<T>
+    */
+   final class OptionalModel extends Optional
    {
-       use NonGenericOptional;
+       /** @use GenericOptional<T> */
+       use GenericOptional;
 
        protected static function isSupported(mixed $value): bool
        {
-           return is_bool($value);
+           return $value instanceof Model;
        }
    }
+
+   abstract class Model {} // your base model
    ```
-2. **[`GenericOptional` trait](./src/GenericOptional.php)** for generic structures like `array` (see [`OptionalArray` class](./tests/Some/OptionalArray.php))
-3. **[`AbstractOptional` trait](./src/AbstractOptional.php)** for extendable factory optionals (use this when you need a base class for other typed optionals, see [`OptionalObject` class](./tests/Some/OptionalObject.php))
+- **[`NonGenericOptional` trait](./src/NonGenericOptional.php)** for fixed specific types like `bool` (see [`OptionalBool` class](./tests/Some/OptionalBool.php))
 
-### Type registration
+---
 
-You can register your custom typed optionals into [`TypedOptional` helper](./src/TypedOptional.php).
-Once registered, calling the base [`Optional` class](./src/Optional.php) will automatically look up and return the correct specific subclass if the value matches its criteria.
-```php
-use PetrKnap\Optional\TypedOptional;
-use PetrKnap\Optional\Optional;
+# ⚠ BREAKING CHANGE ⚠
 
-TypedOptional::register(OptionalBool::class);
+## `Optional::equals()` Behavior Alignment
 
-printf(
-    "Class name of optional which holds `true` is `%s`.\n",
-    get_class(Optional::of(true)),
-);
-```
-```
-Class name of optional which holds `true` is `OptionalBool`.
-```
+The `equals()` method has been refactored to align strictly with `Optional` specification.
+
+1. 
+    **Comparing two empty `Optional`s now evaluates to `true`.**
+    Previously, comparing two empty `Optional`s checks their types.
+    ```java
+    Optional<String> emptyOptStr = Optional.empty();
+    Optional<Array> emptyOptArr = Optional.empty();
+    System.out.println(emptyOptStr.equals(emptyOptArr)); // true
+    ```
+2.
+    **Comparing an `Optional` with a raw value now evaluates to `false`.**
+    Previously, an `Optional` could be compared directly with a raw value.
+    ```java
+    System.out.println(Optional.of("").equals("")); // false
+    ```
+3.
+    **Comparing an `Optional<object>` will be by strict default.**
+    Previously, an `Optional<object>` compares loosely by default.
+    ```java
+    Optional.of(new X()).equals(Optional.of(new X())); // false
+    ```
 
 ---
 

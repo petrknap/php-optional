@@ -7,7 +7,7 @@ namespace PetrKnap\Optional\Some;
 final class DataObject
 {
     public function __construct(
-        public readonly string|null $value = null,
+        public readonly bool|null $value = null,
     ) {
     }
 

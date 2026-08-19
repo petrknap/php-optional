@@ -84,20 +84,8 @@ abstract class Optional implements JavaSe8\Optional
     public static function ofNullable(mixed $value): self
     {
         if (static::class === Optional::class) {
-            if ($value !== null) {
-                try {
-                    /** @var self<U> */
-                    return TypedOptional::of($value, Optional::class);
-                } catch (Exception\CouldNotFindTypedOptionalForValue) {
-                }
-            }
             /** @var self<U> */
             return new class ($value) extends Optional {
-                protected static function isInstanceOfStatic(object $obj): bool
-                {
-                    return $obj instanceof Optional;
-                }
-
                 protected static function isSupported(mixed $value): bool
                 {
                     return true;
@@ -132,31 +120,25 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
-     * @param bool $strict if `true` then the value, if the value is an object, will be compared as a reference
+     * @param ($obj is object ? bool : true) $strict if `true` then the value (if the value is an object) will be compared as a reference
      */
-    public function equals(mixed $obj, bool $strict = false): bool
+    public function equals(mixed $obj, bool $strict = true): bool
     {
         if (!($obj instanceof JavaSe8\Optional)) {
-            /** @var T|null $obj */
-            try {
-                $obj = static::ofNullable($obj);
-            } catch (InvalidArgumentException) {
-                return false;
-            }
+            return false;
         }
 
-        if (static::isInstanceOfStatic($obj)) {
-            $equals = null;
-            $obj->ifPresent(function (mixed $objValue) use (&$equals, $strict): void {
-                $equals = match (!is_object($this->value) || $strict) {
-                    true => $this->value === $objValue,
-                    false => $this->value == $objValue,
-                };
-            });
-            return $equals ?? $this->value === null;
+        $value = $obj->orElse(null);
+
+        /**
+         * `Optional.of(new X()).equals(Optional.of(new X()));` returns `false`,
+         * but it is useful to do loosely comparison between two objects
+         */
+        if (!$strict && is_object($value) && is_object($this->value)) {
+            return $this->value == $value; // @phpstan-ignore equal.invalid
         }
 
-        return false;
+        return $this->value === $value;
     }
 
     /**
@@ -301,14 +283,6 @@ abstract class Optional implements JavaSe8\Optional
             }
             throw new InvalidArgumentException('Exception supplier must return ' . Throwable::class . '.');
         });
-    }
-
-    /**
-     * @internal overridden by {@see AbstractOptional}
-     */
-    protected static function isInstanceOfStatic(object $obj): bool
-    {
-        return $obj instanceof static;
     }
 
     /**
