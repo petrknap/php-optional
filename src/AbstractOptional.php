@@ -48,6 +48,4 @@ trait AbstractOptional
      * @return self<U>
      */
     abstract protected static function createInstance(mixed $value): self;
-
-    abstract protected static function isInstanceOfStatic(object $obj): bool;
 }

@@ -93,11 +93,6 @@ abstract class Optional implements JavaSe8\Optional
             }
             /** @var self<U> */
             return new class ($value) extends Optional {
-                protected static function isInstanceOfStatic(object $obj): bool
-                {
-                    return $obj instanceof Optional;
-                }
-
                 protected static function isSupported(mixed $value): bool
                 {
                     return true;
@@ -132,31 +127,27 @@ abstract class Optional implements JavaSe8\Optional
     }
 
     /**
-     * @param bool $strict if `true` then the value, if the value is an object, will be compared as a reference
+     * @param ($this is JavaSe8\Optional<object> ? ($obj is JavaSe8\Optional<object> ? bool : false) : false) $byReference if `false`, wrapped objects will be compared as records
+     *
+     * @return ($obj is JavaSe8\Optional<mixed> ? bool : false)
+     *
+     * @note `$byReference` defaults to `false` because wrapped objects are expected to be records. While for classes
+     *       `Optional.of(new Class("value")).equals(Optional.of(new Class("value")))` returns `false`, for records
+     *       `Optional.of(new Record("value")).equals(Optional.of(new Record("value")))` returns `true`.
      */
-    public function equals(mixed $obj, bool $strict = false): bool
+    public function equals(mixed $obj, bool $byReference = false): bool
     {
         if (!($obj instanceof JavaSe8\Optional)) {
-            /** @var T|null $obj */
-            try {
-                $obj = static::ofNullable($obj);
-            } catch (InvalidArgumentException) {
-                return false;
-            }
+            return false;
         }
 
-        if (static::isInstanceOfStatic($obj)) {
-            $equals = null;
-            $obj->ifPresent(function (mixed $objValue) use (&$equals, $strict): void {
-                $equals = match (!is_object($this->value) || $strict) {
-                    true => $this->value === $objValue,
-                    false => $this->value == $objValue,
-                };
-            });
-            return $equals ?? $this->value === null;
+        $value = $obj->orElse(null);
+
+        if (!$byReference && is_object($this->value) && is_object($value)) {
+            return $this->value == $value; // @phpstan-ignore equal.invalid
         }
 
-        return false;
+        return $this->value === $value;
     }
 
     /**
@@ -301,14 +292,6 @@ abstract class Optional implements JavaSe8\Optional
             }
             throw new InvalidArgumentException('Exception supplier must return ' . Throwable::class . '.');
         });
-    }
-
-    /**
-     * @internal overridden by {@see AbstractOptional}
-     */
-    protected static function isInstanceOfStatic(object $obj): bool
-    {
-        return $obj instanceof static;
     }
 
     /**

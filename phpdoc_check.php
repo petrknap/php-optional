@@ -9,7 +9,6 @@ declare(strict_types=1);
 use PetrKnap\Optional\Optional;
 use PetrKnap\Optional\Some\DataObject;
 use PetrKnap\Optional\Some\OptionalArray;
-use PetrKnap\Optional\Some\OptionalInt;
 use PetrKnap\Optional\Some\OptionalObject;
 use PetrKnap\Optional\Some\OptionalString;
 
@@ -76,6 +75,24 @@ $objectOption = OptionalObject::of(new stdClass());
 $arrayOption = OptionalArray::of(['', new stdClass()]);
 $check->genericInputOptions($stringOption, $objectOption, $arrayOption);
 $check->nonGenericInputOptions($stringOption, $objectOption, $arrayOption);
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+// Check equals(byReference)
+$option = $objectOption = $scalarOption = Optional::empty();
+/**
+ * @var Optional<object> $objectOption
+ * @var Optional<scalar> $scalarOption
+ */
+$objectOption->equals($option);
+$objectOption->equals($option, byReference: false);
+$objectOption->equals($option, byReference: true);
+$scalarOption->equals($option);
+$scalarOption->equals($option, byReference: false);
+$scalarOption->equals($option, byReference: true); // @phpstan-ignore argument.type
+$option->equals($option, byReference: true);
+$option->equals($objectOption, byReference: true);
+$option->equals($scalarOption, byReference: true); // @phpstan-ignore argument.type
 
 // ---------------------------------------------------------------------------------------------------------------------
 

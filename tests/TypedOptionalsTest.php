@@ -61,8 +61,8 @@ final class TypedOptionalsTest extends TestCase
         self::assertTrue(Some\OptionalString::empty()->equals(Some\OptionalString::empty()));
     }
 
-    public function testTwoEmptiesOfDifferentTypesAreNotEqual(): void
+    public function testTwoEmptiesOfDifferentTypesAreEqual(): void
     {
-        self::assertFalse(Some\OptionalString::empty()->equals(Some\OptionalArray::empty()));
+        self::assertTrue(Some\OptionalString::empty()->equals(Some\OptionalArray::empty()));
     }
 }
