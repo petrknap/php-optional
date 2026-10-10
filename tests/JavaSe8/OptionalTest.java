@@ -6,6 +6,7 @@ public class OptionalTest {
         testFilter();
         testFlatMap();
         testGetters();
+        testIfPresent();
         testIsPresent();
         testMap();
     }
@@ -43,6 +44,11 @@ public class OptionalTest {
         // to nullable
         assert Optional.of(1).orElse(null) == 1;
         assert Optional.empty().orElse(null) == null;
+    }
+
+    private static void testIfPresent() {
+        Optional.of(1).ifPresent(_ -> assert true);
+        Optional.empty().ifPresent(_ -> assert false);
     }
 
     private static void testIsPresent() {

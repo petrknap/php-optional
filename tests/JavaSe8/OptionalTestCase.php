@@ -14,6 +14,10 @@ abstract class OptionalTestCase extends TestCase
     #[DataProvider('dataMatchesJavaBehavior')]
     final public function testMatchesJavaBehavior(string $assert): void
     {
+        if (str_contains($assert, 'assertTrue(false)')) {
+            self::expectNotToPerformAssertions();
+        }
+
         eval($assert);
     }
 
@@ -23,9 +27,9 @@ abstract class OptionalTestCase extends TestCase
             ->map(static fn (string $javaFile): array => array_map(trim(...), explode("\n", $javaFile)))
             ->orElseThrow();
         foreach ($javaLines as $javaLine) {
-            if (str_starts_with($javaLine, 'assert ')) {
+            if (str_contains($javaLine, 'assert ')) {
                 yield $javaLine => [strtr($javaLine, [
-                    'assert' => self::class . '::assertTrue(',
+                    'assert ' => self::class . '::assertTrue(',
                     'Optional.' => static::getClassName() . '::',
                     'Record' => stdClass::class,
                     ' == ' => ' === ',
