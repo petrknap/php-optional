@@ -39,7 +39,7 @@ public class OptionalTest {
     private static void testGetters() {
         assert Optional.of(1).get() == 1;
         assert Optional.empty().orElse(1) == 1;
-        assert Optional.empty().orElseGet(value -> 1) == 1;
+        assert Optional.empty().orElseGet(() -> 1) == 1;
         assert Optional.of(1).orElseThrow() == 1;
         // to nullable
         assert Optional.of(1).orElse(null) == 1;

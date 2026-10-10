@@ -34,9 +34,11 @@ abstract class OptionalTestCase extends TestCase
                     'Record' => stdClass::class,
                     ' == ' => ' === ',
                     'value -> ' => 'fn ($value) => ',
+                    '() -> ' => 'fn () => ',
                     '.' => '->',
                     ';' => ');',
                 ]), [
+                    'fn ($value) => { ' => 'fn ($value) => ',
                     'fn () => { ' => 'fn () => ',
                     '; }));' => ');',
                 ])];
