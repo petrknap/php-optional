@@ -15,9 +15,9 @@ public class OptionalTest {
     }
 
     private static void testEquals() {
-        assert(Optional.of(new Record()).equals(Optional.of(new Record())) == true);
-        assert(Optional.of("").equals(Optional.of("")) == true);
-        assert(Optional.of("").equals("") == false);
-        assert(Optional.empty().equals(Optional.empty()) == true);
+        assert Optional.of(new Record()).equals(Optional.of(new Record())) == true;
+        assert Optional.of("").equals(Optional.of("")) == true;
+        assert Optional.of("").equals("") == false;
+        assert Optional.empty().equals(Optional.empty()) == true;
     }
 }

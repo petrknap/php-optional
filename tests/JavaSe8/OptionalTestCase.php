@@ -21,12 +21,13 @@ abstract class OptionalTestCase extends TestCase
         $javaFile = Optional::ofFalsable(file_get_contents(__DIR__ . '/OptionalTest.java'))->orElseThrow();
         $javaLines = array_map(trim(...), explode("\n", $javaFile));
         foreach ($javaLines as $javaLine) {
-            if (str_starts_with($javaLine, 'assert')) {
+            if (str_starts_with($javaLine, 'assert ')) {
                 yield $javaLine => [strtr($javaLine, [
-                    'assert' => self::class . '::assertTrue',
+                    'assert' => self::class . '::assertTrue(',
                     'Optional.' => static::getClassName() . '::',
                     'Record' => stdClass::class,
-                    '.' => '->'
+                    '.' => '->',
+                    ';' => ');',
                 ])];
             }
         }
