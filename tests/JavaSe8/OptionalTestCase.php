@@ -28,6 +28,8 @@ abstract class OptionalTestCase extends TestCase
                     'assert' => self::class . '::assertTrue(',
                     'Optional.' => static::getClassName() . '::',
                     'Record' => stdClass::class,
+                    ' == ' => ' === ',
+                    '_ -> ' => 'fn () => ',
                     '.' => '->',
                     ';' => ');',
                 ])];
