@@ -33,7 +33,7 @@ abstract class OptionalTestCase extends TestCase
                     'Optional.' => static::getClassName() . '::',
                     'Record' => stdClass::class,
                     ' == ' => ' === ',
-                    '(_) -> ' => 'fn () => ',
+                    'value -> ' => 'fn ($value) => ',
                     '.' => '->',
                     ';' => ');',
                 ]), [

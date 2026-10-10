@@ -25,21 +25,21 @@ public class OptionalTest {
     }
 
     private static void testFilter() {
-        assert Optional.of(1).filter((_) -> true).isPresent() == true;
-        assert Optional.of(1).filter((_) -> false).isPresent() == false;
+        assert Optional.of(1).filter(value -> true).isPresent() == true;
+        assert Optional.of(1).filter(value -> false).isPresent() == false;
         // empty
-        assert Optional.empty().filter((_) -> true).isPresent() == false;
+        assert Optional.empty().filter(value -> true).isPresent() == false;
     }
 
     private static void testFlatMap() {
-        assert Optional.of(1).flatMap((_) -> Optional.of("2")).orElseThrow() == "2";
-        assert Optional.empty().flatMap((_) -> Optional.of("2")).isPresent() == false;
+        assert Optional.of(1).flatMap(value -> Optional.of("2")).orElseThrow() == "2";
+        assert Optional.empty().flatMap(value -> Optional.of("2")).isPresent() == false;
     }
 
     private static void testGetters() {
         assert Optional.of(1).get() == 1;
         assert Optional.empty().orElse(1) == 1;
-        assert Optional.empty().orElseGet((_) -> 1) == 1;
+        assert Optional.empty().orElseGet(value -> 1) == 1;
         assert Optional.of(1).orElseThrow() == 1;
         // to nullable
         assert Optional.of(1).orElse(null) == 1;
@@ -47,8 +47,8 @@ public class OptionalTest {
     }
 
     private static void testIfPresent() {
-        Optional.of(1).ifPresent((_) -> { assert true; });
-        Optional.empty().ifPresent((_) -> { assert false; });
+        Optional.of(1).ifPresent(value -> { assert true; });
+        Optional.empty().ifPresent(value -> { assert false; });
     }
 
     private static void testIsPresent() {
@@ -57,8 +57,8 @@ public class OptionalTest {
     }
 
     private static void testMap() {
-        assert Optional.of(1).map((_) -> "2").orElseThrow() == "2";
-        assert Optional.empty().map((_) -> "2").isPresent() == false;
+        assert Optional.of(1).map(value -> "2").orElseThrow() == "2";
+        assert Optional.empty().map(value -> "2").isPresent() == false;
     }
 
     private static record Record() {
