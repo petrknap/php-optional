@@ -7,11 +7,11 @@ namespace PetrKnap\Optional;
 use DomainException as SomeException;
 use InvalidArgumentException;
 use LogicException;
+use PetrKnap\Optional\JavaSe8\OptionalTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use stdClass;
 
-final class OptionalTest extends TestCase
+final class OptionalTest extends OptionalTestCase
 {
     private const VALUE = 'value';
     private const OTHER = 'other';
@@ -425,6 +425,11 @@ final class OptionalTest extends TestCase
             $data[2] = $data[5] = $data[4] === null ? null : $message;
             yield "{$name} + supplier(class name) + message" => $data;
         }
+    }
+
+    protected static function getClassName(): string
+    {
+        return Optional::class;
     }
 
     private static function makeDataSet(array $args): array
