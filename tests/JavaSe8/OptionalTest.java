@@ -26,6 +26,8 @@ public class OptionalTest {
     private static void testFilter() {
         assert Optional.of(1).filter(_ -> true).isPresent() == true;
         assert Optional.of(1).filter(_ -> false).isPresent() == false;
+        // empty
+        assert Optional.empty().filter(_ -> true).isPresent() == false;
     }
 
     private static void testFlatMap() {
