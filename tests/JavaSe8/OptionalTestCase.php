@@ -28,7 +28,7 @@ abstract class OptionalTestCase extends TestCase
             ->orElseThrow();
         foreach ($javaLines as $javaLine) {
             if (str_contains($javaLine, 'assert ')) {
-                yield $javaLine => [strtr($javaLine, [
+                yield $javaLine => [strtr(strtr($javaLine, [
                     'assert ' => self::class . '::assertTrue(',
                     'Optional.' => static::getClassName() . '::',
                     'Record' => stdClass::class,
@@ -36,6 +36,9 @@ abstract class OptionalTestCase extends TestCase
                     '() -> ' => 'fn () => ',
                     '.' => '->',
                     ';' => ');',
+                ]), [
+                    'fn () => { ' => 'fn () => ',
+                    '; }));' => ');',
                 ])];
             }
         }

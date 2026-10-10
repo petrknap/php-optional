@@ -47,8 +47,8 @@ public class OptionalTest {
     }
 
     private static void testIfPresent() {
-        Optional.of(1).ifPresent(() -> assert true);
-        Optional.empty().ifPresent(() -> assert false);
+        Optional.of(1).ifPresent(() -> { assert true; });
+        Optional.empty().ifPresent(() -> { assert false; });
     }
 
     private static void testIsPresent() {
