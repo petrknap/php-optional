@@ -25,21 +25,21 @@ public class OptionalTest {
     }
 
     private static void testFilter() {
-        assert Optional.of(1).filter(() -> true).isPresent() == true;
-        assert Optional.of(1).filter(() -> false).isPresent() == false;
+        assert Optional.of(1).filter((_) -> true).isPresent() == true;
+        assert Optional.of(1).filter((_) -> false).isPresent() == false;
         // empty
-        assert Optional.empty().filter(() -> true).isPresent() == false;
+        assert Optional.empty().filter((_) -> true).isPresent() == false;
     }
 
     private static void testFlatMap() {
-        assert Optional.of(1).flatMap(() -> Optional.of("2")).orElseThrow() == "2";
-        assert Optional.empty().flatMap(() -> Optional.of("2")).isPresent() == false;
+        assert Optional.of(1).flatMap((_) -> Optional.of("2")).orElseThrow() == "2";
+        assert Optional.empty().flatMap((_) -> Optional.of("2")).isPresent() == false;
     }
 
     private static void testGetters() {
         assert Optional.of(1).get() == 1;
         assert Optional.empty().orElse(1) == 1;
-        assert Optional.empty().orElseGet(() -> 1) == 1;
+        assert Optional.empty().orElseGet((_) -> 1) == 1;
         assert Optional.of(1).orElseThrow() == 1;
         // to nullable
         assert Optional.of(1).orElse(null) == 1;
@@ -47,8 +47,8 @@ public class OptionalTest {
     }
 
     private static void testIfPresent() {
-        Optional.of(1).ifPresent(() -> { assert true; });
-        Optional.empty().ifPresent(() -> { assert false; });
+        Optional.of(1).ifPresent((_) -> { assert true; });
+        Optional.empty().ifPresent((_) -> { assert false; });
     }
 
     private static void testIsPresent() {
@@ -57,8 +57,8 @@ public class OptionalTest {
     }
 
     private static void testMap() {
-        assert Optional.of(1).map(() -> "2").orElseThrow() == "2";
-        assert Optional.empty().map(() -> "2").isPresent() == false;
+        assert Optional.of(1).map((_) -> "2").orElseThrow() == "2";
+        assert Optional.empty().map((_) -> "2").isPresent() == false;
     }
 
     private static record Record() {
