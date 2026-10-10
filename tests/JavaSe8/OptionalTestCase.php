@@ -11,15 +11,17 @@ use stdClass;
 
 abstract class OptionalTestCase extends TestCase
 {
-    #[DataProvider('dataCommonBehavior')]
-    final public function testCommonBehavior(string $assert): void {
+    #[DataProvider('dataMatchesJavaBehavior')]
+    final public function testMatchesJavaBehavior(string $assert): void
+    {
         eval($assert);
     }
 
-    final public static function dataCommonBehavior(): iterable
+    final public static function dataMatchesJavaBehavior(): iterable
     {
-        $javaFile = Optional::ofFalsable(file_get_contents(__DIR__ . '/OptionalTest.java'))->orElseThrow();
-        $javaLines = array_map(trim(...), explode("\n", $javaFile));
+        $javaLines = Optional::ofFalsable(file_get_contents(__DIR__ . '/OptionalTest.java'))
+            ->map(static fn (string $javaFile): array => array_map(trim(...), explode("\n", $javaFile)))
+            ->orElseThrow();
         foreach ($javaLines as $javaLine) {
             if (str_starts_with($javaLine, 'assert ')) {
                 yield $javaLine => [strtr($javaLine, [
