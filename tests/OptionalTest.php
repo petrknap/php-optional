@@ -5,409 +5,52 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 use DomainException as SomeException;
-use InvalidArgumentException;
-use LogicException;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use stdClass;
+use Override;
 
-final class OptionalTest extends TestCase
+final class OptionalTest extends OptionalTestCase
 {
-    private const VALUE = 'value';
-    private const OTHER = 'other';
-
-    /**
-     * @template U of mixed
-     *
-     * @param class-string<Optional<U>> $className
-     * @param U $value
-     */
-    #[DataProvider('dataFactoriesReturnsSelf')]
-    public function testFactoriesReturnsSelf(string $className, mixed $value): void
+    public function testEqualsByReferenceWorks(): void
     {
-        self::assertInstanceOf($className, $className::empty());
-        self::assertInstanceOf($className, $className::of($value));
-        self::assertInstanceOf($className, $className::ofFalsable($value));
-        self::assertInstanceOf($className, $className::ofNullable($value));
-        self::assertInstanceOf($className, $className::ofSingle([$value]));
+        $object = $sameObject = new \stdClass();
+        $equalObject = new \stdClass();
+
+        self::assertTrue(Optional::of($object)->equals(Optional::of($sameObject), byReference: true));
+        self::assertFalse(Optional::of($object)->equals(Optional::of($equalObject), byReference: true));
     }
 
-    public static function dataFactoriesReturnsSelf(): array
+    public function testOrElseThrowsCustomExceptionMessage(): void
+    {
+        self::expectExceptionMessage('test');
+        Optional::empty()->orElseThrow(message: 'test');
+    }
+
+    public function testOrElseThrowsCustomExceptionClass(): void
+    {
+        self::expectException(SomeException::class);
+        Optional::empty()->orElseThrow(SomeException::class);
+    }
+
+    public function testOrElseThrowsCustomException(): void
+    {
+        $expectedException = new SomeException();
+        try {
+            Optional::empty()->orElseThrow(static fn (): SomeException => $expectedException);
+        } catch (SomeException $exception) {
+            self::assertSame($expectedException, $exception);
+        }
+    }
+
+    #[Override]
+    public static function dataCustomFactoryWorks(): iterable
     {
         return [
-            Optional::class => [Optional::class, self::VALUE],
-            OptionalOverrides::class => [Some\Optional::class, self::VALUE],
+            'ofFalsable' => [Optional::ofFalsable(...), 0, false, null],
+            'ofSingle' => [Optional::ofSingle(...), [0], [], [1, 2]],
         ];
     }
 
-    #[DataProvider('dataMethodsReturnsSelf')]
-    public function testMethodsReturnsSelf(Optional $option): void
+    protected static function getClassName(): string
     {
-        self::assertInstanceOf($option::class, $option->filter(static fn (): bool => true));
-        self::assertInstanceOf($option::class, $option->filter(static fn (): bool => false));
-    }
-
-    public static function dataMethodsReturnsSelf(): array
-    {
-        return array_map(
-            static fn (array $i): array => [$i[0]::of($i[1])],
-            self::dataFactoriesReturnsSelf(),
-        );
-    }
-
-    public function testMethodEmptyReturnsEmptyOptional(): void
-    {
-        self::assertFalse(Optional::empty()->isPresent());
-    }
-
-    public function testMethodOfReturnsOptionalWithValue(): void
-    {
-        $optional = Optional::of(self::VALUE);
-
-        self::assertTrue($optional->isPresent());
-        self::assertSame(self::VALUE, $optional->get());
-    }
-
-    public function testMethodOfThrowsWhenCalledWithNull(): void
-    {
-        self::expectException(LogicException::class);
-        Optional::of(null);
-    }
-
-    #[DataProvider('dataMethodOfFalsableWorks')]
-    public function testMethodOfFalsableWorks(Optional $expectedOptional, mixed $value): void
-    {
-        self::assertEquals($expectedOptional, Optional::ofFalsable($value));
-    }
-
-    public static function dataMethodOfFalsableWorks(): array
-    {
-        return self::makeDataSet([
-            [self::VALUE],
-            [false],
-        ]);
-    }
-
-    #[DataProvider('dataMethodOfNullableWorks')]
-    public function testMethodOfNullableWorks(Optional $expectedOptional, mixed $value): void
-    {
-        self::assertTrue(Optional::ofNullable($value)->equals($expectedOptional));
-    }
-
-    public static function dataMethodOfNullableWorks(): array
-    {
-        return self::makeDataSet([
-            [self::VALUE],
-            [null],
-        ]);
-    }
-
-    #[DataProvider('dataMethodOfSingleWorks')]
-    public function testMethodOfSingleWorks(Optional $expectedOptional, iterable $value): void
-    {
-        self::assertTrue(Optional::ofSingle($value)->equals($expectedOptional));
-    }
-
-    public static function dataMethodOfSingleWorks(): array
-    {
-        return self::makeDataSet([
-            [[self::VALUE]],
-            [[]],
-        ]);
-    }
-
-    public function testMethodOfSingleThrowsOnNullValue(): void
-    {
-        self::expectException(InvalidArgumentException::class);
-
-        Optional::ofSingle([null]);
-    }
-
-    public function testMethodOfSingleThrowsOnMultipleValues(): void
-    {
-        self::expectException(InvalidArgumentException::class);
-
-        Optional::ofSingle([self::VALUE, self::VALUE]);
-    }
-
-    #[DataProvider('dataMethodEqualsWorks')]
-    public function testMethodEqualsWorks(Optional $optional, mixed $obj, bool|null $byReference, bool $expectedResult): void
-    {
-        self::assertSame($expectedResult, match ($byReference === null) {
-            true => $optional->equals($obj),
-            false => $optional->equals($obj, byReference: $byReference),
-        });
-    }
-
-    public static function dataMethodEqualsWorks(): array
-    {
-        $object = new Some\DataObject(self::VALUE);
-        $set = static function (string $key, Optional $optional, array $equals, bool|null $byReference = null) use ($object): iterable {
-            $sameObject = $object;
-            $equalObject = new Some\DataObject(self::VALUE);
-            $otherObject = new Some\DataObject(self::OTHER);
-            $differentObject = new stdClass();
-            $differentObject->value = self::VALUE;
-
-            $set = [
-                // non-optional
-                'null' => null,
-                'value' => self::VALUE,
-                'other value' => self::OTHER,
-                'same object' => $sameObject,
-                'equal object' => $equalObject,
-                'other object' => $otherObject,
-                'different object' => $differentObject,
-                // optional
-                'optional (empty)' => Optional::empty(),
-                'optional (value)' => Optional::of(self::VALUE),
-                'optional (other value)' => Optional::of(self::OTHER),
-                'optional (same object)' => Optional::of($sameObject),
-                'optional (equal object)' => Optional::of($equalObject),
-                'optional (other object)' => Optional::of($otherObject),
-                'optional (different object)' => Optional::of($differentObject),
-                // some optionals
-                'some optional (empty)' => Some\Optional::empty(),
-                'some optional (value)' => Some\Optional::of(self::VALUE),
-                'some optional (other value)' => Some\Optional::of(self::OTHER),
-            ];
-            foreach ($set as $name => $value) {
-                $shouldEqual = in_array($name, $equals);
-                yield sprintf(
-                    '%s %s %s',
-                    $key,
-                    sprintf($shouldEqual ? '%ss to' : 'does not %s to', match ($byReference) {
-                        true => 'strictly equal',
-                        false => 'loosely equal',
-                        null => 'equal',
-                    }),
-                    $name,
-                ) => [$optional, $value, $byReference, $shouldEqual];
-            }
-        };
-
-        return [
-            ...$set(
-                'optional (empty)', // ~ typeless (empty)
-                Optional::empty(),
-                ['optional (empty)', 'some optional (empty)'],
-            ),
-            ...$set(
-                'optional (value)', // ~ typeless (value)
-                Optional::of(self::VALUE),
-                ['optional (value)', 'some optional (value)'],
-            ),
-            ...$set(
-                'optional (object)',
-                Optional::of($object),
-                ['optional (same object)', 'optional (equal object)'],
-                byReference: false,
-            ),
-            ...$set(
-                'optional (object)',
-                Optional::of($object),
-                ['optional (same object)'],
-                byReference: true,
-            ),
-            ...$set(
-                'some optional (empty)',
-                Some\Optional::empty(),
-                ['optional (empty)', 'some optional (empty)'],
-            ),
-            ...$set(
-                'some optional (value)',
-                Some\Optional::of(self::VALUE),
-                ['optional (value)', 'some optional (value)'],
-            ),
-        ];
-    }
-
-    #[DataProvider('dataMethodFilterWorks')]
-    public function testMethodFilterWorks(Optional $optional, bool $expected): void
-    {
-        self::assertEquals(
-            $expected ? $optional : $optional::empty(),
-            $optional->filter(static fn (string $value): bool => $value === self::VALUE),
-        );
-    }
-
-    public static function dataMethodFilterWorks(): array
-    {
-        return [
-            self::VALUE => [Optional::of(self::VALUE), true],
-            self::OTHER => [Optional::of(self::OTHER), false],
-        ];
-    }
-
-    #[DataProvider('dataMethodFlatMapWorks')]
-    public function testMethodFlatMapWorks(Optional $optional, Optional $expectedResult): void
-    {
-        self::assertTrue($expectedResult->equals($optional->flatMap(fn (string $v): Optional => Optional::of($v . 'x'))));
-    }
-
-    public static function dataMethodFlatMapWorks(): array
-    {
-        return self::makeDataSet([
-            [Optional::of(self::VALUE . 'x')],
-            [Optional::empty()],
-        ]);
-    }
-
-    #[DataProvider('dataMethodGetWorks')]
-    public function testMethodGetWorks(Optional $optional, ?string $expectedValue, ?string $expectedException): void
-    {
-        if ($expectedException !== null) {
-            self::expectException($expectedException);
-        }
-        self::assertSame($expectedValue, $optional->get());
-    }
-
-    public static function dataMethodGetWorks(): array
-    {
-        return self::makeDataSet([
-            [self::VALUE, null],
-            [null, JavaSe8\NoSuchElementException::class],
-        ]);
-    }
-
-    #[DataProvider('dataMethodIfPresentWorks')]
-    public function testMethodIfPresentWorks(Optional $optional, string $expectedInvoked): void
-    {
-        $invoked = null;
-        $optional->ifPresent(
-            consumer: static function (string $value) use (&$invoked) {
-                self::assertSame(self::VALUE, $value);
-                $invoked = 'consumer';
-            },
-            else: static function (mixed ...$args) use (&$invoked) {
-                self::assertSame([], $args);
-                $invoked = 'else';
-            },
-        );
-
-        self::assertSame($expectedInvoked, $invoked);
-    }
-
-    public static function dataMethodIfPresentWorks(): array
-    {
-        return self::makeDataSet([
-            ['consumer'],
-            ['else'],
-        ]);
-    }
-
-    #[DataProvider('dataMethodIsPresentWorks')]
-    public function testMethodIsPresentWorks(Optional $optional, bool $expectedReturn): void
-    {
-        self::assertSame($expectedReturn, $optional->isPresent());
-    }
-
-    public static function dataMethodIsPresentWorks(): array
-    {
-        return self::makeDataSet([
-            [true],
-            [false],
-        ]);
-    }
-
-    #[DataProvider('dataMethodMapWorks')]
-    public function testMethodMapWorks(Optional $optional, Optional $expectedResult): void
-    {
-        self::assertTrue($expectedResult->equals($optional->map(fn (string $v): string => $v . 'x')));
-    }
-
-    public static function dataMethodMapWorks(): array
-    {
-        return self::makeDataSet([
-            [Some\Optional::of(self::VALUE . 'x')],
-            [Optional::empty()],
-        ]);
-    }
-
-    #[DataProvider('dataMethodOrElseWorks')]
-    public function testMethodOrElseWorks(Optional $optional, string|null $orValue, string|null $expectedValue): void
-    {
-        self::assertSame($expectedValue, $optional->orElse($orValue));
-    }
-
-    public static function dataMethodOrElseWorks(): array
-    {
-        return self::makeDataSet([
-            [self::OTHER, self::VALUE],
-            [self::OTHER, self::OTHER],
-        ]) + [
-            'typed null' => [Some\Optional::empty(), null, null],
-        ];
-    }
-
-    #[DataProvider('dataMethodOrElseGetWorks')]
-    public function testMethodOrElseGetWorks(Optional $optional, string|null $orValue, string|null $expectedValue): void
-    {
-        self::assertSame($expectedValue, $optional->orElseGet(static fn(): string|null => $orValue));
-    }
-
-    public static function dataMethodOrElseGetWorks(): array
-    {
-        return self::makeDataSet([
-            [self::OTHER, self::VALUE],
-            [self::OTHER, self::OTHER],
-        ]) + [
-            'typed null' => [Some\Optional::empty(), null, null],
-        ];
-    }
-
-    #[DataProvider('dataMethodOrElseThrowWorks')]
-    public function testMethodOrElseThrowWorks(
-        Optional $optional,
-        null|string|callable $exceptionProvider,
-        null|string $message,
-        ?string $expectedValue,
-        ?string $expectedException,
-        ?string $expectedExceptionMessage
-    ): void {
-        if ($expectedException) {
-            self::expectException($expectedException);
-        }
-        if ($expectedExceptionMessage) {
-            self::expectExceptionMessage($expectedExceptionMessage);
-        }
-        self::assertSame($expectedValue, $optional->orElseThrow($exceptionProvider, $message));
-    }
-
-    public static function dataMethodOrElseThrowWorks(): iterable
-    {
-        $message = 'This is test!';
-        $dataSet = self::makeDataSet([
-            [null, null, self::VALUE, null, null],
-            [null, null, null, SomeException::class, null],
-        ]);
-        foreach ($dataSet as $name => $data) {
-            $data[4] = $data[4] === null ? null : Exception\CouldNotGetValueOfEmptyOptional::class;
-            yield "{$name} + supplier(null)" => $data;
-            $data[2] = $data[5] = $data[4] === null ? null : $message;
-            yield "{$name} + supplier(null) + message" => $data;
-        }
-        $exceptionSupplier = static fn(string|null $message): SomeException => new SomeException($message ?? '');
-        foreach ($dataSet as $name => $data) {
-            $data[1] = $exceptionSupplier;
-            yield "{$name} + supplier(callable)" => $data;
-            $data[2] = $data[5] = $data[4] === null ? null : $message;
-            yield "{$name} + supplier(callable) + message" => $data;
-        }
-        $exceptionSupplier = SomeException::class;
-        foreach ($dataSet as $name => $data) {
-            $data[1] = $exceptionSupplier;
-            yield "{$name} + supplier(class name)" => $data;
-            $data[2] = $data[5] = $data[4] === null ? null : $message;
-            yield "{$name} + supplier(class name) + message" => $data;
-        }
-    }
-
-    private static function makeDataSet(array $args): array
-    {
-        return [
-            'present value' => [Optional::of(self::VALUE), ...$args[0]],
-            'not present value' => [Optional::empty(), ...$args[1]],
-        ];
+        return Optional::class;
     }
 }
