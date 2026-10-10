@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 /**
+ * @deprecated will be removed, use {@see Optional}
+ *
  * @extends Optional<bool>
  */
 final class OptionalBool extends Optional

@@ -66,16 +66,25 @@ final class TypedOptional
         self::$typedOptionals[] = $typedOptionalClassName;
     }
 
+    /**
+     * @deprecated will be removed
+     */
     public static function enableErrorTriggering(): void
     {
         self::$enabledErrorTriggering = true;
     }
 
+    /**
+     * @deprecated will be removed
+     */
     public static function disableErrorTriggering(): void
     {
         self::$enabledErrorTriggering = false;
     }
 
+    /**
+     * @deprecated will be removed
+     */
     public static function triggerNotice(string $message): void
     {
         if (self::$enabledErrorTriggering === true) {
