@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: corretto
       - run: javac tests/JavaSe8/OptionalTest.java
       - run: java -cp tests/JavaSe8 OptionalTest
