@@ -37,6 +37,8 @@ abstract class OptionalTestCase extends TestCase
                     '() -> ' => 'fn () => ',
                     '.' => '->',
                     ';' => ');',
+                    '<Integer>' => '',
+                    '<String>' => '',
                 ]), [
                     'fn ($value) => { ' => 'fn ($value) => ',
                     'fn () => { ' => 'fn () => ',
