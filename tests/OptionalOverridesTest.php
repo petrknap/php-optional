@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionNamedType;
 
-final class OptionalOverridesTest extends TestCase
+final class OptionalOverridesTest extends OptionalTestCase
 {
     #[DataProvider('dataOverridesReturnFromParentToChild')]
     public function testOverridesReturnFromParentToChild(ReflectionClass $customOptional, string $methodName): void
@@ -49,5 +48,10 @@ final class OptionalOverridesTest extends TestCase
                 $customOptionalMethod->getDocComment(),
             ];
         }
+    }
+
+    protected static function getClassName(): string
+    {
+        return Some\Optional::class;
     }
 }

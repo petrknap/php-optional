@@ -163,6 +163,8 @@ abstract class Optional implements JavaSe8\Optional
      * @return ($empty is null ? Optional<U> : V)
      *
      * @note do not use {@see self}/{@see static}, it maps itself to another {@see Optional}
+     *
+     * @todo return JavaSe8\Optional
      */
     public function flatMap(callable $mapper, Optional|null $empty = null): Optional
     {
