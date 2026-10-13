@@ -22,9 +22,6 @@ abstract class Optional implements JavaSe8\Optional
     final protected function __construct(
         protected readonly mixed $value,
     ) {
-        if ($this->value !== null && !@static::isSupported($this->value)) {
-            throw new InvalidArgumentException('Value is not supported.');
-        }
     }
 
     /**
@@ -84,19 +81,8 @@ abstract class Optional implements JavaSe8\Optional
     public static function ofNullable(mixed $value): self
     {
         if (static::class === Optional::class) {
-            if ($value !== null) {
-                try {
-                    /** @var self<U> */
-                    return TypedOptional::of($value, Optional::class);
-                } catch (Exception\CouldNotFindTypedOptionalForValue) {
-                }
-            }
             /** @var self<U> */
             return new class ($value) extends Optional {
-                protected static function isSupported(mixed $value): bool
-                {
-                    return true;
-                }
             };
         }
         return new static($value);
@@ -221,11 +207,9 @@ abstract class Optional implements JavaSe8\Optional
      *
      * @param callable(T): U $mapper
      *
-     * @return Optional<U>
-     *
-     * @note do not use {@see self}/{@see static}, it maps itself to another {@see Optional}
+     * @return self<U>
      */
-    public function map(callable $mapper): Optional
+    public function map(callable $mapper): self
     {
         /** @var callable(T): Optional<U> $flatMapper */
         $flatMapper = static function (mixed $value) use ($mapper): Optional {
@@ -246,11 +230,8 @@ abstract class Optional implements JavaSe8\Optional
         if ($this->value !== null) {
             return $this->value;
         }
-        /** @var T|null $other */
-        $other = $otherSupplier();
-        return $other === null || static::isSupported($other)
-            ? $other
-            : throw new InvalidArgumentException('Other supplier must return supported other.');
+        /** @var T|null */
+        return $otherSupplier();
     }
 
     /**
@@ -293,11 +274,6 @@ abstract class Optional implements JavaSe8\Optional
             throw new InvalidArgumentException('Exception supplier must return ' . Throwable::class . '.');
         });
     }
-
-    /**
-     * @param mixed $value not null
-     */
-    abstract protected static function isSupported(mixed $value): bool;
 
     private static function triggerNotice(string $message): void
     {
