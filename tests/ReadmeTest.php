@@ -21,8 +21,7 @@ final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
     {
         return [
             'Basic usage' => 'data',
-            'Creating your own typed optional / Quick Overview / NonGenericOptional' => '',
-            'Creating your own typed optional / Type registration' => self::OUTPUT_IN_MARKDOWN,
+            'Creating your own typed optional' => '',
         ];
     }
 }

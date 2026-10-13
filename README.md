@@ -17,7 +17,6 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 ```php
 use PetrKnap\Optional\Optional;
 
-/** @var Optional<string> $stringOption */
 $stringOption = Optional::of('data');
 if ($stringOption->isPresent()) {
     echo $stringOption->get();
@@ -30,48 +29,24 @@ Optional::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
 ```
 
 
-## Creating your own typed optional
+## Creating your own optional
 
-The library provides specialized traits to help you implement strictly typed wrappers with full static analysis support.
+This library provides [`OptionalOverrides` trait](src/OptionalOverrides.php) to help you implement your own wrapper with full static analysis support (see [`Some\Optional` class](./tests/Some/Optional.php)):
 
-### Quick Overview
-
-1. **[`NonGenericOptional` trait](./src/NonGenericOptional.php)** for fixed specific types like `bool` or `string` (see [`OptionalString` class](./tests/Some/OptionalString.php))
-   ```php
-   use PetrKnap\Optional\Optional;
-   use PetrKnap\Optional\NonGenericOptional;
-
-   /** @extends Optional<bool> */
-   final class OptionalBool extends Optional
-   {
-       use NonGenericOptional;
-
-       protected static function isSupported(mixed $value): bool
-       {
-           return is_bool($value);
-       }
-   }
-   ```
-2. **[`GenericOptional` trait](./src/GenericOptional.php)** for generic structures like `array` (see [`OptionalArray` class](./tests/Some/OptionalArray.php))
-3. **[`AbstractOptional` trait](./src/AbstractOptional.php)** for extendable factory optionals (use this when you need a base class for other typed optionals, see [`OptionalObject` class](./tests/Some/OptionalObject.php))
-
-### Type registration
-
-You can register your custom typed optionals into [`TypedOptional` helper](./src/TypedOptional.php).
-Once registered, calling the base [`Optional` class](./src/Optional.php) will automatically look up and return the correct specific subclass if the value matches its criteria.
 ```php
-use PetrKnap\Optional\TypedOptional;
 use PetrKnap\Optional\Optional;
+use PetrKnap\Optional\OptionalOverrides;
 
-TypedOptional::register(OptionalBool::class);
-
-printf(
-    "Class name of optional which holds `true` is `%s`.\n",
-    get_class(Optional::of(true)),
-);
-```
-```
-Class name of optional which holds `true` is `OptionalBool`.
+/**
+ * @template-covariant T of mixed type of non-null value
+ *
+ * @extends Optional<T>
+ */
+final class MyOptional extends Optional
+{
+   /** @use OptionalOverrides<T> */
+   use OptionalOverrides;
+}
 ```
 
 ---
