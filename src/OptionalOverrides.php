@@ -97,6 +97,19 @@ trait OptionalOverrides
 
     /**
      * @template U of mixed type of non-null value
+     * @template V of JavaSe8\Optional<U>
+     *
+     * @param callable(T): V $mapper
+     *
+     * @return V|self<U>
+     */
+    public function flatMap(callable $mapper): JavaSe8\Optional
+    {
+        return parent::flatMap($mapper);
+    }
+
+    /**
+     * @template U of mixed type of non-null value
      *
      * @param callable(T): U $mapper
      *
