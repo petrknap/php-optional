@@ -37,13 +37,9 @@ public class OptionalTest {
     }
 
     private static void testFlatMap() {
-        /**
-         * @todo
-         * Optional $o1;
-         * $o1 = Optional.<Another>empty(); assert (Optional.of(1).flatMap($v -> $o1) == $o1);
-         */
-        Optional $o2;
-        $o2 = Optional.<Another>empty(); assert (Optional.empty().flatMap($v -> $o2) != $o2);
+        Optional $anotherOption, $thisOption;
+        $anotherOption = Optional.<Another>empty(); assert (Optional.of(1).flatMap($v -> $anotherOption) == $anotherOption);
+        $thisOption = Optional.empty(); assert ($thisOption.flatMap($v -> Optional.of(new Another())) == $thisOption);
     }
 
     private static void testGetters() {

@@ -48,9 +48,9 @@ final class AnotherOption implements Optional
         NotImplemented::throw(__METHOD__);
     }
 
-    public function isPresent(): bool
+    public function isPresent(): never
     {
-        return false;
+        NotImplemented::throw(__METHOD__);
     }
 
     public function map(callable $mapper): never

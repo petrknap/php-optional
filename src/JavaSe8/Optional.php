@@ -16,14 +16,14 @@ use Throwable;
 interface Optional
 {
     /**
-     * Returns an empty {@see self::class} instance.
+     * Returns an empty {@see Optional} instance.
      *
      * @return self<T>
      */
     public static function empty(): self;
 
     /**
-     * Returns an {@see self::class} with the specified present non-null value.
+     * Returns an {@see Optional} with the specified present non-null value.
      *
      * @template U of T
      *
@@ -34,7 +34,7 @@ interface Optional
     public static function of(mixed $value): self;
 
     /**
-     * Returns an {@see self::class} describing the specified value, if non-null, otherwise returns an empty {@see self::class}.
+     * Returns an {@see Optional} describing the specified value, if non-null, otherwise returns an empty {@see Optional}.
      *
      * @template U of T
      *
@@ -45,12 +45,12 @@ interface Optional
     public static function ofNullable(mixed $value): self;
 
     /**
-     * Indicates whether some other object is "equal to" this {@see self::class}.
+     * Indicates whether some other object is "equal to" this {@see Optional}.
      */
     public function equals(mixed $obj): bool;
 
     /**
-     * If a value is present, and the value matches the given predicate, return an {@see self::class} describing the value, otherwise return an empty {@see self::class}.
+     * If a value is present, and the value matches the given predicate, return an {@see Optional} describing the value, otherwise return an empty {@see Optional}.
      *
      * @param callable(T): bool $predicate
      *
@@ -59,18 +59,19 @@ interface Optional
     public function filter(callable $predicate): self;
 
     /**
-     * If a value is present, apply the provided {@see self::class}-bearing mapping function to it, return that result, otherwise return an empty {@see self::class}.
+     * If a value is present, apply the provided {@see Optional}-bearing mapping function to it, return that result, otherwise return an empty {@see Optional}.
      *
      * @template U of mixed type of non-null value
+     * @template V of Optional<U>
      *
-     * @param callable(T): self<U> $mapper
+     * @param callable(T): V $mapper
      *
-     * @return self<U>
+     * @return V|Optional<U>
      */
-    public function flatMap(callable $mapper): self;
+    public function flatMap(callable $mapper): Optional;
 
     /**
-     * If a value is present in this {@see self::class}, returns the value, otherwise throws {@see NoSuchElementException}.
+     * If a value is present in this {@see Optional}, returns the value, otherwise throws {@see NoSuchElementException}.
      *
      * @return T
      *
@@ -91,7 +92,7 @@ interface Optional
     public function isPresent(): bool;
 
     /**
-     * If a value is present, apply the provided mapping function to it, and if the result is non-null, return an {@see self::class} describing the result.
+     * If a value is present, apply the provided mapping function to it, and if the result is non-null, return an {@see Optional} describing the result.
      *
      * @template U of mixed type of non-null value
      *

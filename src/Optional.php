@@ -155,31 +155,19 @@ abstract class Optional implements JavaSe8\Optional
 
     /**
      * @template U of mixed type of non-null value
-     * @template V of Optional<U>
+     * @template V of JavaSe8\Optional<U>
      *
-     * @param ($empty is null ? callable(T): JavaSe8\Optional<U> : callable(T): V) $mapper
-     * @param V|null $empty
+     * @param callable(T): V $mapper
      *
-     * @return ($empty is null ? Optional<U> : V)
-     *
-     * @note do not use {@see self}/{@see static}, it maps itself to another {@see Optional}
-     *
-     * @todo return JavaSe8\Optional
+     * @return V|self<U>
      */
-    public function flatMap(callable $mapper, Optional|null $empty = null): Optional
+    public function flatMap(callable $mapper): JavaSe8\Optional
     {
         if ($this->value === null) {
-            /** @var V */
-            return $empty ?? Optional::empty();
+            return $this;
         }
 
-        /** @var JavaSe8\Optional<T>|"" $mapped */
-        $mapped = $mapper($this->value);
-        return match (true) {
-            $mapped instanceof Optional => $mapped,
-            $mapped instanceof JavaSe8\Optional => $mapped->isPresent() ? Optional::of($mapped->get()) : Optional::empty(),
-            default => throw new InvalidArgumentException('Mapper must return instance of ' . JavaSe8\Optional::class . '.'),
-        };
+        return $mapper($this->value);
     }
 
     public function get(): mixed

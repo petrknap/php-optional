@@ -104,20 +104,20 @@ $abstract->filter(static fn (string $value): bool => true); // @phpstan-ignore a
 $concrete->filter(static fn (int $value): bool => true);
 $concrete->filter(static fn (string $value): bool => true); // @phpstan-ignore argument.type
 // - flatMap
-$abstract->flatMap(static fn (int $value): Optional => $abstract);
-$abstract->flatMap(static fn (string $value): Optional => $abstract); // @phpstan-ignore argument.type
-$concrete->flatMap(static fn (int $value): Some\Optional => $concrete);
-$concrete->flatMap(static fn (string $value): Some\Optional => $concrete); // @phpstan-ignore argument.type
+$abstractFlatMapped = $abstract->flatMap(static fn (int $value): Some\Optional => Some\Optional::of(''));
+$abstract->flatMap(static fn (string $value): Some\Optional => Some\Optional::of(1)); // @phpstan-ignore argument.type
+$concreteFlatMapped = $concrete->flatMap(static fn (int $value): Optional => Optional::of(''));
+$concrete->flatMap(static fn (string $value): Optional => Optional::of(1)); // @phpstan-ignore argument.type
 // - ifPresent
 $abstract->ifPresent(static fn (int $value): int => $value);
 $abstract->ifPresent(static fn (string $value): string => $value); // @phpstan-ignore argument.type
 $concrete->ifPresent(static fn (int $value): int => $value);
 $concrete->ifPresent(static fn (string $value): string => $value); // @phpstan-ignore argument.type
 // - map
-$abstract->map(static fn (int $value): int => $value);
-$abstract->map(static fn (string $value): string => $value); // @phpstan-ignore argument.type
-$concrete->map(static fn (int $value): int => $value);
-$concrete->map(static fn (string $value): string => $value); // @phpstan-ignore argument.type
+$abstractMapped = $abstract->map(static fn (int $value): string => '');
+$abstract->map(static fn (string $value): int => 1); // @phpstan-ignore argument.type
+$concreteMapped = $concrete->map(static fn (int $value): string => '');
+$concrete->map(static fn (string $value): int => 1); // @phpstan-ignore argument.type
 // - orElse
 $abstractOrElse = $abstract->orElse(0);
 $abstractOrElseNull = $abstract->orElse(null);
@@ -131,33 +131,25 @@ $abstract->orElseGet(static fn (): string => ''); // @phpstan-ignore argument.ty
 $concreteOrElseGet = $concrete->orElseGet(static fn (): int => 0);
 $concrete->orElseGet(static fn (): string => ''); // @phpstan-ignore argument.type
 
-// Re-map & filter it
-$abstractMapped = $abstract->map(static fn (int $value): string => '');
-$abstractMappedFiltered = $abstractMapped->filter(static fn (string $value): bool => true);
-$abstractMapped->filter(static fn (int $value): bool => true); // @phpstan-ignore argument.type
-$concreteMapped = $concrete->map(static fn (int $value): string => '');
-$concreteMappedFiltered = $concreteMapped->filter(static fn (string $value): bool => true);
-$concreteMapped->filter(static fn (int $value): bool => true); // @phpstan-ignore argument.type
-
 // Check it
 // - abstract
 $check->genericInputOptions(abstract: $abstract); // @phpstan-ignore argument.type
-$check->genericInputOptions(abstract: $abstractMappedFiltered);
 $check->rawInputs(int: $abstract->get());
 $check->rawInputs(int: $abstractOrElse);
 $check->rawInputs(int: $abstractOrElseGet);
 $check->rawInputs(int: $abstractOrElseNull); // @phpstan-ignore argument.type
 $check->rawInputs(int: $abstractOrElseNull ?? 0);
-$check->rawInputs(string: $abstractMappedFiltered->orElseThrow());
+$check->rawInputs(string: $abstractMapped->orElseThrow());
+$check->rawInputs(string: $abstractFlatMapped->orElseThrow());
 // - concrete
 $check->genericInputOptions(concrete: $concrete); // @phpstan-ignore argument.type
-$check->genericInputOptions(concrete: $concreteMappedFiltered);
 $check->rawInputs(int: $concrete->get());
 $check->rawInputs(int: $concreteOrElse);
 $check->rawInputs(int: $concreteOrElseGet);
 $check->rawInputs(int: $concreteOrElseNull); // @phpstan-ignore argument.type
 $check->rawInputs(int: $concreteOrElseNull ?? 0);
-$check->rawInputs(string: $concreteMappedFiltered->orElseThrow());
+$check->rawInputs(string: $concreteMapped->orElseThrow());
+$check->rawInputs(string: $concreteFlatMapped->orElseThrow());
 
 // ---------------------------------------------------------------------------------------------------------------------
 
