@@ -30,16 +30,23 @@ public class OptionalTest {
     }
 
     private static void testFilter() {
-        assert (Optional.of(1).filter($v -> true).isPresent() == true);
+        Optional $thisOption;
+        // present option returns itself on true
+        $thisOption = Optional.of(1); assert ($thisOption.filter($v -> true) == $thisOption);
+        // present option returns empty option on false
         assert (Optional.of(1).filter($v -> false).isPresent() == false);
-        // empty
-        assert (Optional.empty().filter($v -> true).isPresent() == false);
+        // empty option does not call predicate
+        Optional.empty().filter($v -> { assert (false); return true; }).isPresent();
     }
 
     private static void testFlatMap() {
         Optional $anotherOption, $thisOption;
+        // present option returns mapped option
         $anotherOption = Optional.<Another>empty(); assert (Optional.of(1).flatMap($v -> $anotherOption) == $anotherOption);
+        // empty option returns itself
         $thisOption = Optional.empty(); assert ($thisOption.flatMap($v -> Optional.of(new Another())) == $thisOption);
+        // empty option does not call mapper
+        Optional.empty().flatMap($v -> { assert (false); return Optional.<Another>empty(); });
     }
 
     private static void testGetters() {
@@ -54,7 +61,9 @@ public class OptionalTest {
     }
 
     private static void testIfPresent() {
-        Optional.of(1).ifPresent($v -> { assert (true); });
+        // present option calls consumer with value
+        Optional.of(1).ifPresent($v -> { assert ($v == 1); });
+        // empty option does not call consumer
         Optional.empty().ifPresent($v -> { assert (false); });
     }
 
@@ -64,8 +73,15 @@ public class OptionalTest {
     }
 
     private static void testMap() {
+        Optional $thisOption;
+        // present option returns mapped option
         assert (Optional.of(1).map($v -> "2").orElseThrow() == "2");
-        assert (Optional.empty().map($v -> "2").isPresent() == false);
+        // present option returns empty option for null
+        assert (Optional.of(1).map($v -> null).isPresent() == false);
+        // empty option returns itself
+        $thisOption = Optional.empty(); assert ($thisOption.map($v -> "2") == $thisOption);
+        // empty option does not call mapper
+        Optional.empty().map($v -> { assert (false); return null; });
     }
 
     private static record Record() {
