@@ -30,10 +30,13 @@ public class OptionalTest {
     }
 
     private static void testFilter() {
-        assert (Optional.of(1).filter($v -> true).isPresent() == true);
+        Optional $thisOption;
+        // present option returns itself on true
+        $thisOption = Optional.of(1); assert ($thisOption.filter($v -> true) == $thisOption);
+        // present option returns empty option on false
         assert (Optional.of(1).filter($v -> false).isPresent() == false);
-        // empty
-        assert (Optional.empty().filter($v -> true).isPresent() == false);
+        // empty option does not call predicate
+        Optional.empty().filter($v -> { assert (false); return true; }).isPresent();
     }
 
     private static void testFlatMap() {
