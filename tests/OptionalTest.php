@@ -18,6 +18,23 @@ final class OptionalTest extends OptionalTestCase
         self::assertFalse(Optional::of($object)->equals(Optional::of($equalObject), byReference: true));
     }
 
+    public function testIfPresentsElseWorks(): void
+    {
+        Optional::of(1)->ifPresent(
+            fn () => null,
+            else: self::fail(...),
+        );
+
+        $elseCalled = false;
+        Optional::empty()->ifPresent(
+            self::fail(...),
+            else: function () use (&$elseCalled): void {
+                $elseCalled = true;
+            },
+        );
+        self::assertTrue($elseCalled);
+    }
+
     public function testOrElseThrowsCustomExceptionMessage(): void
     {
         self::expectExceptionMessage('test');
