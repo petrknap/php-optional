@@ -141,16 +141,14 @@ abstract class Optional implements JavaSe8\Optional
      */
     public function filter(callable $predicate): self
     {
-        if ($this->value !== null) {
-            $matches = $predicate($this->value);
-            if (!is_bool($matches)) {
-                throw new InvalidArgumentException('Predicate must return boolean.');
-            }
-            if (!$matches) {
-                return static::empty();
-            }
+        if ($this->value === null) {
+            return $this;
         }
-        return $this;
+
+        return match ($predicate($this->value)) {
+            true => $this,
+            false=> static::empty(),
+        };
     }
 
     /**
@@ -201,13 +199,11 @@ abstract class Optional implements JavaSe8\Optional
      */
     public function map(callable $mapper): self
     {
-        /** @var callable(T): Optional<U> $flatMapper */
-        $flatMapper = static function (mixed $value) use ($mapper): Optional {
-            /** @var T $mapped */
-            $mapped = $mapper($value);
-            return Optional::ofNullable($mapped);
-        };
-        return $this->flatMap($flatMapper);
+        if ($this->value === null) {
+            return $this;
+        }
+        /** @var self<U> */
+        return static::ofNullable($mapper($this->value)); // @phpstan-ignore argument.type, argument.templateType
     }
 
     public function orElse(mixed $other): mixed
