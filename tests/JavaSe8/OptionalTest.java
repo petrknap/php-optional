@@ -30,10 +30,16 @@ public class OptionalTest {
     }
 
     private static void testFilter() {
-        assert (Optional.of(1).filter($v -> true).isPresent() == true);
-        assert (Optional.of(1).filter($v -> false).isPresent() == false);
-        // empty
-        assert (Optional.empty().filter($v -> true).isPresent() == false);
+        Optional $thisOption;
+        // present option returns itself on true
+        $thisOption = Optional.of(1); assert ($thisOption.filter($v -> true) == $thisOption);
+        // present option returns empty option on false
+        assert (Optional.of(1).filter($v -> false).equals(Optional.empty()));
+        // empty option returns itself
+        $thisOption = Optional.empty(); assert ($thisOption.filter($v -> true) == $thisOption);
+        $thisOption = Optional.empty(); assert ($thisOption.filter($v -> false) == $thisOption);
+        // empty option does not call predicate
+        Optional.empty().filter($v -> { assert (false); return true; });
     }
 
     private static void testFlatMap() {
@@ -70,9 +76,9 @@ public class OptionalTest {
     private static void testMap() {
         Optional $thisOption;
         // present option returns mapped option
-        assert (Optional.of(1).map($v -> "2").orElseThrow() == "2");
+        assert (Optional.of(1).map($v -> "2").equals(Optional.of("2")));
         // present option returns empty option for null
-        assert (Optional.of(1).map($v -> null).isPresent() == false);
+        assert (Optional.of(1).map($v -> null).equals(Optional.empty()));
         // empty option returns itself
         $thisOption = Optional.empty(); assert ($thisOption.map($v -> "2") == $thisOption);
         // empty option skips mapper

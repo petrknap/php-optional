@@ -141,16 +141,14 @@ abstract class Optional implements JavaSe8\Optional
      */
     public function filter(callable $predicate): self
     {
-        if ($this->value !== null) {
-            $matches = $predicate($this->value);
-            if (!is_bool($matches)) {
-                throw new InvalidArgumentException('Predicate must return boolean.');
-            }
-            if (!$matches) {
-                return static::empty();
-            }
+        if ($this->value === null) {
+            return $this;
         }
-        return $this;
+
+        return match ($predicate($this->value)) {
+            true => $this,
+            false=> static::empty(),
+        };
     }
 
     /**
