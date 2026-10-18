@@ -38,8 +38,12 @@ public class OptionalTest {
 
     private static void testFlatMap() {
         Optional $anotherOption, $thisOption;
+        // present option returns mapped option
         $anotherOption = Optional.<Another>empty(); assert (Optional.of(1).flatMap($v -> $anotherOption) == $anotherOption);
+        // empty option returns itself
         $thisOption = Optional.empty(); assert ($thisOption.flatMap($v -> Optional.of(new Another())) == $thisOption);
+        // empty option skips mapper
+        Optional.empty().flatMap($v -> { assert (false); return Optional.<Another>empty(); });
     }
 
     private static void testGetters() {
@@ -64,8 +68,15 @@ public class OptionalTest {
     }
 
     private static void testMap() {
+        Optional $thisOption;
+        // present option returns mapped option
         assert (Optional.of(1).map($v -> "2").orElseThrow() == "2");
-        assert (Optional.empty().map($v -> "2").isPresent() == false);
+        // present option returns empty option for null
+        assert (Optional.of(1).map($v -> null).isPresent() == false);
+        // empty option returns itself
+        $thisOption = Optional.empty(); assert ($thisOption.map($v -> "2") == $thisOption);
+        // empty option skips mapper
+        Optional.empty().map($v -> { assert (false); return null; });
     }
 
     private static record Record() {

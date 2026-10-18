@@ -117,6 +117,6 @@ trait OptionalOverrides
      */
     public function map(callable $callback): self
     {
-        return self::ofNullable(parent::map($callback)->orElse(null));
+        return parent::map($callback);
     }
 }
