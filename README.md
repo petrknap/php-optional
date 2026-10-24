@@ -1,5 +1,7 @@
 # Optional (like in Java Platform SE 8 but in PHP)
 
+It is an easy way to make sure that everyone has to check if they have (not) received a value.
+
 > A container object which may or may not contain a non-null value. If a value is present, `isPresent()` will return `true` and `get()` will return the value.
 >
 > Additional methods that depend on the presence or absence of a contained value are provided, such as `orElse()` (return a default value if value not present) and `ifPresent()` (execute a block of code if the value is present).
@@ -9,7 +11,9 @@
 > --
 > [Optional (Java Platform SE 8)](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 
-It is an easy way to make sure that everyone has to check if they have (not) received a `null`.
+This library delivers complete and reliable behavior of the `Optional`.
+The entire feature set is [explicitly described and checked by an `OptionalTest.java`](./tests/JavaSe8/OptionalTest.java).
+This ensures **absolute reliability and alignment with the Java specification**.
 
 
 ## Basic usage
