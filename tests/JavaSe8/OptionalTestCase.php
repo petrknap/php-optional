@@ -32,7 +32,7 @@ abstract class OptionalTestCase extends TestCase
             if (!str_starts_with($javaLine, '*') && str_contains($javaLine, 'assert (')) {
                 yield $javaLine => [$headers . strtr($javaLine, [
                     'assert (' => '\\' . self::class . '::assertTrue(',
-                    'Optional.<Another>' => 'AnotherOption::',
+                    'Optional.<Alternative>' => 'AlternativeOption::',
                     'Optional.' => '\\' . static::getClassName() . '::',
                     'Record' => '\\' . stdClass::class,
                     '<Integer>' => '',

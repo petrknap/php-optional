@@ -14,8 +14,6 @@ use Throwable;
  */
 abstract class Optional implements JavaSe8\Optional
 {
-    private bool|null $wasPresent = null;
-
     /**
      * @param T|null $value
      */
@@ -168,11 +166,11 @@ abstract class Optional implements JavaSe8\Optional
         return $mapper($this->value);
     }
 
+    /**
+     * @see self::orElseThrow() - more explicit alternative
+     */
     public function get(): mixed
     {
-        if ($this->wasPresent === null) {
-            self::triggerNotice('Call `isPresent()` before accessing the value.');
-        }
         return $this->orElseThrow();
     }
 
@@ -190,7 +188,7 @@ abstract class Optional implements JavaSe8\Optional
 
     public function isPresent(): bool
     {
-        return $this->wasPresent = $this->value !== null;
+        return $this->value !== null;
     }
 
     /**
@@ -230,7 +228,7 @@ abstract class Optional implements JavaSe8\Optional
      *
      * @return T
      *
-     * @throws E
+     * @throws ($exceptionSupplier is null ? Exception\CouldNotGetValueOfEmptyOptional : E)
      */
     public function orElseThrow(
         null|string|callable $exceptionSupplier = null,
@@ -262,13 +260,5 @@ abstract class Optional implements JavaSe8\Optional
             }
             throw new InvalidArgumentException('Exception supplier must return ' . Throwable::class . '.');
         });
-    }
-
-    private static function triggerNotice(string $message): void
-    {
-        trigger_error(
-            $message,
-            error_level: E_USER_NOTICE,
-        );
     }
 }

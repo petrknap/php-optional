@@ -24,7 +24,7 @@ public class OptionalTest {
         // two records
         assert (Optional.of(new Record()).equals(Optional.of(new Record())) == true);
         // two empties
-        assert (Optional.<Integer>empty().equals(Optional.<Another>empty()) == true);
+        assert (Optional.<Integer>empty().equals(Optional.<Alternative>empty()) == true);
         // wrong type
         assert (Optional.of(1).equals(Optional.of("1")) == false);
     }
@@ -43,24 +43,31 @@ public class OptionalTest {
     }
 
     private static void testFlatMap() {
-        Optional $anotherOption, $thisOption;
+        Optional $alternativeOption, $thisOption;
         // present option returns mapped option
-        $anotherOption = Optional.<Another>empty(); assert (Optional.of(1).flatMap($v -> $anotherOption) == $anotherOption);
+        $alternativeOption = Optional.<Alternative>empty(); assert (Optional.of(1).flatMap($v -> $alternativeOption) == $alternativeOption);
         // empty option returns itself
-        $thisOption = Optional.empty(); assert ($thisOption.flatMap($v -> Optional.of(new Another())) == $thisOption);
+        $thisOption = Optional.empty(); assert ($thisOption.flatMap($v -> Optional.of(new Alternative())) == $thisOption);
         // empty option does not call mapper
-        Optional.empty().flatMap($v -> { assert (false); return Optional.<Another>empty(); });
+        Optional.empty().flatMap($v -> { assert (false); return Optional.<Alternative>empty(); });
     }
 
     private static void testGetters() {
+        // present option returns value
         assert (Optional.of(1).get() == 1);
+        assert (Optional.of(1).orElse(2) == 1);
+        assert (Optional.of(1).orElseGet(() -> 2) == 1);
+        assert (Optional.of(1).orElseThrow() == 1);
+        // empty option returns fallback
         assert (Optional.<Integer>empty().orElse(1) == 1);
         assert (Optional.<Integer>empty().orElseGet(() -> 1) == 1);
-        assert (Optional.of(1).orElseThrow() == 1);
+        // empty option throws
+        try { Optional.empty().get(); } catch (NoSuchElementException $e) { assert (true); }
         try { Optional.empty().orElseThrow(); } catch (NoSuchElementException $e) { assert (true); }
-        // to nullable
-        assert (Optional.of(1).orElse(null) == 1);
+        try { Optional.empty().orElseThrow(() -> new AlternativeException()); } catch (AlternativeException $e) { assert (true); }
+        // fallback can be null
         assert (Optional.empty().orElse(null) == null);
+        assert (Optional.empty().orElseGet(() -> null) == null);
     }
 
     private static void testIfPresent() {
@@ -90,6 +97,9 @@ public class OptionalTest {
     private static record Record() {
     }
 
-    private static class Another {
+    private static class Alternative {
+    }
+
+    private static class AlternativeException extends RuntimeException {
     }
 }

@@ -6,7 +6,7 @@ namespace PetrKnap\Optional\JavaSe8;
 
 use PetrKnap\Shorts\Exception\NotImplemented;
 
-final class AnotherOption implements Optional
+final class AlternativeOption implements Optional
 {
     public static function empty(): self
     {
