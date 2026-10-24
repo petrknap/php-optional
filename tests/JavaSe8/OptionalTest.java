@@ -48,7 +48,7 @@ public class OptionalTest {
         $anotherOption = Optional.<Another>empty(); assert (Optional.of(1).flatMap($v -> $anotherOption) == $anotherOption);
         // empty option returns itself
         $thisOption = Optional.empty(); assert ($thisOption.flatMap($v -> Optional.of(new Another())) == $thisOption);
-        // empty option skips mapper
+        // empty option does not call mapper
         Optional.empty().flatMap($v -> { assert (false); return Optional.<Another>empty(); });
     }
 
@@ -64,7 +64,9 @@ public class OptionalTest {
     }
 
     private static void testIfPresent() {
-        Optional.of(1).ifPresent($v -> { assert (true); });
+        // present option calls consumer with value
+        Optional.of(1).ifPresent($v -> { assert ($v == 1); });
+        // empty option does not call consumer
         Optional.empty().ifPresent($v -> { assert (false); });
     }
 
@@ -81,7 +83,7 @@ public class OptionalTest {
         assert (Optional.of(1).map($v -> null).equals(Optional.empty()));
         // empty option returns itself
         $thisOption = Optional.empty(); assert ($thisOption.map($v -> "2") == $thisOption);
-        // empty option skips mapper
+        // empty option does not call mapper
         Optional.empty().map($v -> { assert (false); return null; });
     }
 
