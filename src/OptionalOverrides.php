@@ -74,16 +74,16 @@ trait OptionalOverrides
      *
      * @template U of T
      *
-     * @param iterable<U> $value
+     * @param iterable<U> $values
      *
-     * @return (U is null ? ($value is empty ? self<U> : never) : self<U>)
+     * @return (U is null ? ($values is empty ? self<U> : never) : self<U>)
      *
      * @throws InvalidArgumentException
      */
-    public static function ofSingle(iterable $value): self
+    public static function ofSingle(iterable $values): self
     {
         /** @var self<U> */
-        return parent::ofSingle($value);
+        return parent::ofSingle($values);
     }
 
     /**
