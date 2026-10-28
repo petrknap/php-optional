@@ -91,20 +91,20 @@ abstract class Optional implements JavaSe8\Optional
      *
      * @template U of T
      *
-     * @param iterable<U> $value
+     * @param iterable<U> $values
      *
-     * @return (U is null ? ($value is empty ? self<U> : never) : self<U>)
+     * @return (U is null ? ($values is empty ? self<U> : never) : self<U>)
      *
      * @throws InvalidArgumentException
      */
-    public static function ofSingle(iterable $value): self
+    public static function ofSingle(iterable $values): self
     {
         $option = null;
-        foreach ($value as $v) {
+        foreach ($values as $value) {
             if ($option !== null) {
                 throw new InvalidArgumentException('Value is not single.');
             }
-            $option = static::of($v);
+            $option = static::of($value);
         }
         /** @var self<U> */
         return $option ?? static::empty();
