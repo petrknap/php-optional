@@ -12,6 +12,8 @@ use Throwable;
  * @template-covariant T of mixed type of non-null value
  *
  * @see https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html
+ *
+ * @note This interface does not define `hashCode()`.
  */
 interface Optional
 {

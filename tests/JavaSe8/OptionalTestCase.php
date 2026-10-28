@@ -22,13 +22,8 @@ abstract class OptionalTestCase extends TestCase
 
     final public static function dataMatchesJavaBehavior(): iterable
     {
-        $javaLines = array_map(
-            trim(...),
-            explode("\n", file_get_contents(__DIR__ . '/OptionalTest.java')),
-        );
-
         $headers = 'namespace ' . __NAMESPACE__ . ';';
-        foreach ($javaLines as $javaLine) {
+        foreach (static::getJavaLines() as $javaLine) {
             if (!str_starts_with($javaLine, '*') && str_contains($javaLine, 'assert (')) {
                 yield $javaLine => [$headers . strtr($javaLine, [
                     'assert (' => '\\' . self::class . '::assertTrue(',
@@ -39,13 +34,28 @@ abstract class OptionalTestCase extends TestCase
                     '.' => '->',
                     ' == ' => ' === ',
                     ' != ' => ' !== ',
+                    '$v -> { }' => 'fn ($v) => null',
                     '$v -> {' => 'function ($v) { return ',
                     '$v -> ' => 'fn ($v) => ',
+                    '() -> { }' => 'fn () => null',
                     '() -> {' => 'function () { return ',
                     '() -> ' => 'fn () => ',
                 ])];
             }
         }
+    }
+
+    final protected static function loadJavaLines(string $path): array
+    {
+        return array_map(
+            trim(...),
+            explode("\n", file_get_contents($path)),
+        );
+    }
+
+    protected static function getJavaLines(): array
+    {
+        return self::loadJavaLines(__DIR__ . '/OptionalTest.java');
     }
 
     /**

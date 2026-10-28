@@ -10,9 +10,9 @@ use Throwable;
 /**
  * @template-covariant T of mixed type of non-null value
  *
- * @implements JavaSe8\Optional<T>
+ * @implements JavaSe9\Optional<T>
  */
-abstract class Optional implements JavaSe8\Optional
+abstract class Optional implements JavaSe9\Optional
 {
     /**
      * @param T|null $value
@@ -186,6 +186,14 @@ abstract class Optional implements JavaSe8\Optional
         }
     }
 
+    /**
+     * @see self::ifPresent() - shorter alternative
+     */
+    public function ifPresentOrElse(callable $action, callable $emptyAction): void
+    {
+        $this->ifPresent($action, else: $emptyAction);
+    }
+
     public function isPresent(): bool
     {
         return $this->value !== null;
@@ -205,6 +213,23 @@ abstract class Optional implements JavaSe8\Optional
         }
         /** @var self<U> */
         return static::ofNullable($mapper($this->value)); // @phpstan-ignore argument.type, argument.templateType
+    }
+
+    /**
+     * @template U of mixed type of non-null value
+     * @template V of JavaSe9\Optional<U>
+     *
+     * @param callable(): V $supplier
+     *
+     * @return V|self<U>
+     */
+    public function or(callable $supplier): JavaSe9\Optional
+    {
+        if ($this->value !== null) {
+            return $this;
+        }
+
+        return $supplier();
     }
 
     public function orElse(mixed $other): mixed
