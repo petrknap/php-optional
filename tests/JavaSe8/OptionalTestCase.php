@@ -6,14 +6,13 @@ namespace PetrKnap\Optional\JavaSe8;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 abstract class OptionalTestCase extends TestCase
 {
     #[DataProvider('dataMatchesJavaBehavior')]
     final public function testMatchesJavaBehavior(string $assert): void
     {
-        if (str_contains($assert, 'assertTrue(false)')) {
+        if (str_contains($assert, '::assertTrue(false)')) {
             self::expectNotToPerformAssertions();
         }
 
@@ -25,22 +24,7 @@ abstract class OptionalTestCase extends TestCase
         $headers = 'namespace ' . __NAMESPACE__ . ';';
         foreach (static::getJavaLines() as $javaLine) {
             if (!str_starts_with($javaLine, '*') && str_contains($javaLine, 'assert (')) {
-                yield $javaLine => [$headers . strtr($javaLine, [
-                    'assert (' => '\\' . self::class . '::assertTrue(',
-                    'Optional.<Alternative>' => 'AlternativeOption::',
-                    'Optional.' => '\\' . static::getClassName() . '::',
-                    'Record' => '\\' . stdClass::class,
-                    '<Integer>' => '',
-                    '.' => '->',
-                    ' == ' => ' === ',
-                    ' != ' => ' !== ',
-                    '$v -> { }' => 'fn ($v) => null',
-                    '$v -> {' => 'function ($v) { return ',
-                    '$v -> ' => 'fn ($v) => ',
-                    '() -> { }' => 'fn () => null',
-                    '() -> {' => 'function () { return ',
-                    '() -> ' => 'fn () => ',
-                ])];
+                yield $javaLine => [$headers . strtr($javaLine, static::getJava2PhpTranslations())];
             }
         }
     }
@@ -56,6 +40,23 @@ abstract class OptionalTestCase extends TestCase
     protected static function getJavaLines(): array
     {
         return self::loadJavaLines(__DIR__ . '/OptionalTest.java');
+    }
+
+    protected static function getJava2PhpTranslations(): array
+    {
+        return [
+            'assert (' => '\\' . self::class . '::assertTrue(',
+            'Optional.<Alternative>' => '\\' . AlternativeOption::class . '::',
+            'Optional.' => '\\' . static::getClassName() . '::',
+            '<Integer>' => '',
+            '.' => '->',
+            ' == ' => ' === ',
+            ' != ' => ' !== ',
+            '$v -> {' => 'function ($v) { return ',
+            '$v -> ' => 'fn ($v) => ',
+            '() -> {' => 'function () { return ',
+            '() -> ' => 'fn () => ',
+        ];
     }
 
     /**

@@ -10,9 +10,9 @@ use Throwable;
 /**
  * @template-covariant T of mixed type of non-null value
  *
- * @implements JavaSe9\Optional<T>
+ * @implements JavaSe10\Optional<T>
  */
-abstract class Optional implements JavaSe9\Optional
+abstract class Optional implements JavaSe10\Optional
 {
     /**
      * @param T|null $value

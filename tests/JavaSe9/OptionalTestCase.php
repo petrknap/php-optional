@@ -16,4 +16,16 @@ abstract class OptionalTestCase extends JavaSe8\OptionalTestCase
             self::loadJavaLines(__DIR__ . '/OptionalTest.java'),
         );
     }
+
+    #[\Override]
+    protected static function getJava2PhpTranslations(): array
+    {
+        return array_merge(
+            parent::getJava2PhpTranslations(),
+            [
+                '$v -> { }' => 'fn ($v) => null',
+                '() -> { }' => 'fn () => null',
+            ],
+        );
+    }
 }

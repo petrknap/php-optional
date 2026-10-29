@@ -10,14 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        directory:
-          - tests/JavaSe8
-          - tests/JavaSe9
+        include:
+          - se: 8
+            lts: 8
+          - se: 9
+            lts: 11
+          - se: 10
+            lts: 11
+          - se: 16
+            lts: 17
+    name: Java SE ${{ matrix.se }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: ${{ matrix.lts }}
           distribution: corretto
-      - run: javac ${{ matrix.directory }}/OptionalTest.java
-      - run: java -cp ${{ matrix.directory }} OptionalTest
+      - run: javac tests/JavaSe${{ matrix.se }}/OptionalTest.java
+      - run: java -ea -cp tests/JavaSe${{ matrix.se }} OptionalTest
