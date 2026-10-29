@@ -1,4 +1,4 @@
-# Optional (like in Java Platform SE 8 but in PHP)
+# Optional (like in Java Platform SE 8/9 but in PHP)
 
 It is an easy way to make sure that everyone has to check if they have (not) received a value.
 
@@ -12,8 +12,11 @@ It is an easy way to make sure that everyone has to check if they have (not) rec
 > [Optional (Java Platform SE 8)](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 
 This library delivers complete and reliable behavior of the `Optional`.
-The entire feature set is [explicitly described and checked by an `OptionalTest.java`](./tests/JavaSe8/OptionalTest.java).
-This ensures **absolute reliability and alignment with the Java specification**.
+The **entire feature set is explicitly described and checked** by:
+- [`JavaSe8/OptionalTest.java`](./tests/JavaSe8/OptionalTest.java)
+- [`JavaSe9/OptionalTest.java`](./tests/JavaSe9/OptionalTest.java)
+
+This ensures absolute reliability and alignment with the Java specification.
 
 
 ## Basic usage

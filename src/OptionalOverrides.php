@@ -119,4 +119,17 @@ trait OptionalOverrides
     {
         return parent::map($callback);
     }
+
+    /**
+     * @template U of mixed type of non-null value
+     * @template V of JavaSe9\Optional<U>
+     *
+     * @param callable(): V $supplier
+     *
+     * @return V|self<U>
+     */
+    public function or(callable $supplier): JavaSe9\Optional
+    {
+        return parent::or($supplier);
+    }
 }

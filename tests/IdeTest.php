@@ -22,6 +22,7 @@ final class IdeTest extends TestCase
             $option->get()->tryIt();  # <--- HERE
         }
 
+        Optional::empty()->or(static fn (): Optional => $option)->get()->tryIt();  # <--- HERE
         Optional::empty()->orElse($instance)->tryIt();  # <--- HERE
         Optional::empty()->orElseGet(static fn (): Some\DataObject => $instance)->tryIt();  # <--- HERE
         $option->orElseThrow()->tryIt();  # <--- HERE

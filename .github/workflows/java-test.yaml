@@ -8,11 +8,16 @@ on:
 jobs:
   java-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory:
+          - tests/JavaSe8
+          - tests/JavaSe9
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: corretto
-      - run: javac tests/JavaSe8/OptionalTest.java
-      - run: java -cp tests/JavaSe8 OptionalTest
+      - run: javac ${{ matrix.directory }}/OptionalTest.java
+      - run: java -cp ${{ matrix.directory }} OptionalTest

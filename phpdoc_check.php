@@ -113,6 +113,13 @@ $abstract->ifPresent(static fn (int $value): int => $value);
 $abstract->ifPresent(static fn (string $value): string => $value); // @phpstan-ignore argument.type
 $concrete->ifPresent(static fn (int $value): int => $value);
 $concrete->ifPresent(static fn (string $value): string => $value); // @phpstan-ignore argument.type
+// - ifPresentOrElse
+$abstract->ifPresentOrElse(static fn (int $value): int => $value, static fn () => null);
+$abstract->ifPresentOrElse(static fn (string $value): string => $value, static fn () => null); // @phpstan-ignore argument.type
+$abstract->ifPresentOrElse(static fn (int $value): int => $value, static fn (int $value): int => $value); // @phpstan-ignore argument.type
+$concrete->ifPresentOrElse(static fn (int $value): int => $value, static fn () => null);
+$concrete->ifPresentOrElse(static fn (string $value): string => $value, static fn () => null); // @phpstan-ignore argument.type
+$concrete->ifPresentOrElse(static fn (int $value): int => $value, static fn (int $value): int => $value); // @phpstan-ignore argument.type
 // - map
 $abstractMapped = $abstract->map(static fn (int $value): string => '');
 $abstract->map(static fn (string $value): int => 1); // @phpstan-ignore argument.type
@@ -134,6 +141,9 @@ $concrete->orElseGet(static fn (): string => ''); // @phpstan-ignore argument.ty
 // Check it
 // - abstract
 $check->genericInputOptions(abstract: $abstract); // @phpstan-ignore argument.type
+$check->genericInputOptions(abstract: $abstractMapped);
+$check->genericInputOptions(abstract: Optional::of('A')->or(static fn (): Optional => Optional::of('B')));
+$check->genericInputOptions(abstract: Optional::of('A')->or(static fn (): Optional => Optional::of(1))); // @phpstan-ignore argument.type
 $check->rawInputs(int: $abstract->get());
 $check->rawInputs(int: $abstractOrElse);
 $check->rawInputs(int: $abstractOrElseGet);
@@ -143,6 +153,9 @@ $check->rawInputs(string: $abstractMapped->orElseThrow());
 $check->rawInputs(string: $abstractFlatMapped->orElseThrow());
 // - concrete
 $check->genericInputOptions(concrete: $concrete); // @phpstan-ignore argument.type
+$check->genericInputOptions(concrete: $concreteMapped);
+$check->genericInputOptions(concrete: Some\Optional::of('A')->or(static fn (): Some\Optional => Some\Optional::of('B')));
+$check->genericInputOptions(concrete: Some\Optional::of('A')->or(static fn (): Some\Optional => Some\Optional::of(1))); // @phpstan-ignore argument.type
 $check->rawInputs(int: $concrete->get());
 $check->rawInputs(int: $concreteOrElse);
 $check->rawInputs(int: $concreteOrElseGet);

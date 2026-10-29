@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PetrKnap\Optional;
 
 use DomainException as SomeException;
-use Override;
 
 final class OptionalTest extends OptionalTestCase
 {
@@ -57,7 +56,7 @@ final class OptionalTest extends OptionalTestCase
         }
     }
 
-    #[Override]
+    #[\Override]
     public static function dataCustomFactoryWorks(): iterable
     {
         return [

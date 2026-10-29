@@ -7,7 +7,7 @@ namespace PetrKnap\Optional;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-abstract class OptionalTestCase extends JavaSe8\OptionalTestCase
+abstract class OptionalTestCase extends JavaSe9\OptionalTestCase
 {
     final public static function dataOptions(): array
     {
