@@ -21,8 +21,6 @@ public class OptionalTest {
         assert (Optional.of(1).equals(1) == false);
         assert (Optional.of(1).equals(Optional.of(2)) == false);
         assert (Optional.of(1).equals(Optional.empty()) == false);
-        // two records
-        assert (Optional.of(new Record()).equals(Optional.of(new Record())) == true);
         // two empties
         assert (Optional.<Integer>empty().equals(Optional.<Alternative>empty()) == true);
         // wrong type
@@ -57,13 +55,12 @@ public class OptionalTest {
         assert (Optional.of(1).get() == 1);
         assert (Optional.of(1).orElse(2) == 1);
         assert (Optional.of(1).orElseGet(() -> 2) == 1);
-        assert (Optional.of(1).orElseThrow() == 1);
+        assert (Optional.of(1).orElseThrow(() -> new AlternativeException()) == 1);
         // empty option returns fallback
         assert (Optional.<Integer>empty().orElse(1) == 1);
         assert (Optional.<Integer>empty().orElseGet(() -> 1) == 1);
         // empty option throws
         try { Optional.empty().get(); } catch (NoSuchElementException $e) { assert (true); }
-        try { Optional.empty().orElseThrow(); } catch (NoSuchElementException $e) { assert (true); }
         try { Optional.empty().orElseThrow(() -> new AlternativeException()); } catch (AlternativeException $e) { assert (true); }
         // fallback can be null
         assert (Optional.empty().orElse(null) == null);
@@ -92,9 +89,6 @@ public class OptionalTest {
         $thisOption = Optional.empty(); assert ($thisOption.map($v -> "2") == $thisOption);
         // empty option does not call mapper
         Optional.empty().map($v -> { assert (false); return null; });
-    }
-
-    private static record Record() {
     }
 
     private static class Alternative {

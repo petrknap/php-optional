@@ -1,4 +1,4 @@
-# Optional (like in Java Platform SE 8/9 but in PHP)
+# Optional (like in Java Platform SE but in PHP)
 
 It is an easy way to make sure that everyone has to check if they have (not) received a value.
 
@@ -15,6 +15,8 @@ This library delivers complete and reliable behavior of the `Optional`.
 The **entire feature set is explicitly described and checked** by:
 - [`JavaSe8/OptionalTest.java`](./tests/JavaSe8/OptionalTest.java)
 - [`JavaSe9/OptionalTest.java`](./tests/JavaSe9/OptionalTest.java)
+- [`JavaSe10/OptionalTest.java`](./tests/JavaSe10/OptionalTest.java)
+- [`JavaSe16/OptionalTest.java`](./tests/JavaSe16/OptionalTest.java)
 
 This ensures absolute reliability and alignment with the Java specification.
 
