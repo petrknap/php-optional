@@ -16,6 +16,7 @@ The **entire feature set is explicitly described and checked** by:
 - [`JavaSe8/OptionalTest.java`](./tests/JavaSe8/OptionalTest.java)
 - [`JavaSe9/OptionalTest.java`](./tests/JavaSe9/OptionalTest.java)
 - [`JavaSe10/OptionalTest.java`](./tests/JavaSe10/OptionalTest.java)
+- [`JavaSe11/OptionalTest.java`](./tests/JavaSe11/OptionalTest.java)
 - [`JavaSe16/OptionalTest.java`](./tests/JavaSe16/OptionalTest.java)
 
 This ensures absolute reliability and alignment with the Java specification.

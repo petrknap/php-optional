@@ -17,6 +17,8 @@ jobs:
             lts: 11
           - se: 10
             lts: 11
+          - se: 11
+            lts: 11
           - se: 16
             lts: 17
     name: Java SE ${{ matrix.se }}

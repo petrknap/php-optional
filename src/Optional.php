@@ -10,9 +10,9 @@ use Throwable;
 /**
  * @template-covariant T of mixed type of non-null value
  *
- * @implements JavaSe10\Optional<T>
+ * @implements JavaSe11\Optional<T>
  */
-abstract class Optional implements JavaSe10\Optional
+abstract class Optional implements JavaSe11\Optional
 {
     /**
      * @param T|null $value
@@ -194,6 +194,17 @@ abstract class Optional implements JavaSe10\Optional
         $this->ifPresent($action, else: $emptyAction);
     }
 
+    /**
+     * @note do not use it internally, compare {@see self::$value} to `null` directly
+     */
+    public function isEmpty(): bool
+    {
+        return $this->value === null;
+    }
+
+    /**
+     * @note do not use it internally, compare {@see self::$value} to `null` directly
+     */
     public function isPresent(): bool
     {
         return $this->value !== null;

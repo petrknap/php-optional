@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace PetrKnap\Optional\JavaSe16;
 
-use PetrKnap\Optional\JavaSe10;
-use stdClass;
+use PetrKnap\Optional\JavaSe11;
 
-abstract class OptionalTestCase extends JavaSe10\OptionalTestCase
+abstract class OptionalTestCase extends JavaSe11\OptionalTestCase
 {
     #[\Override]
     protected static function getJavaLines(): array
