@@ -65,6 +65,7 @@ final class OptionalTest extends OptionalTestCase
         ];
     }
 
+    #[\Override]
     protected static function getClassName(): string
     {
         return Optional::class;

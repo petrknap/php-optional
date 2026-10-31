@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use Throwable;
 
 /**
+ * A container object which may or may not contain a non-null value.
+ *
  * @template-covariant T of mixed type of non-null value
  *
  * @implements JavaSe11\Optional<T>
@@ -79,9 +81,7 @@ abstract class Optional implements JavaSe11\Optional
     public static function ofNullable(mixed $value): self
     {
         if (static::class === Optional::class) {
-            /** @var self<U> */
-            return new class ($value) extends Optional {
-            };
+            return Internal\Optional::ofNullable($value);
         }
         return new static($value);
     }

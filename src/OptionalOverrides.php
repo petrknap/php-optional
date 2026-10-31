@@ -115,9 +115,9 @@ trait OptionalOverrides
      *
      * @return self<U>
      */
-    public function map(callable $callback): self
+    public function map(callable $mapper): self
     {
-        return parent::map($callback);
+        return parent::map($mapper);
     }
 
     /**
