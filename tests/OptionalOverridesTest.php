@@ -50,6 +50,16 @@ final class OptionalOverridesTest extends OptionalTestCase
         }
     }
 
+    #[\Override]
+    public static function dataCustomFactoryWorks(): iterable
+    {
+        return [
+            'ofFalsable' => [Some\Optional::ofFalsable(...), 0, false, null],
+            'ofSingle' => [Some\Optional::ofSingle(...), [0], [], [1, 2]],
+        ];
+    }
+
+    #[\Override]
     protected static function getClassName(): string
     {
         return Some\Optional::class;
