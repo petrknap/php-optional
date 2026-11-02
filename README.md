@@ -27,11 +27,12 @@ This ensures absolute reliability and alignment with the Java specification.
 ```php
 use PetrKnap\Optional\Optional;
 
+// Create string option which holds data
 $stringOption = Optional::of('data');
-if ($stringOption->isPresent()) {
-    echo $stringOption->get();
-}
+// Print data from string option
+echo $stringOption->orElse('missing data');
 
+// Handle function that returns false on failure
 Optional::ofFalsable(tmpfile())->ifPresent(function ($tmpFile): void {
     fwrite($tmpFile, 'data');
     fclose($tmpFile);

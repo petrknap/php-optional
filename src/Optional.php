@@ -167,7 +167,7 @@ abstract class Optional implements JavaSe11\Optional
     }
 
     /**
-     * @see self::orElseThrow() - more explicit alternative
+     * @deprecated Not recommended; use {@see self::orElseThrow()} instead.
      */
     public function get(): mixed
     {
@@ -187,7 +187,7 @@ abstract class Optional implements JavaSe11\Optional
     }
 
     /**
-     * @see self::ifPresent() - shorter alternative
+     * @deprecated Not recommended; use {@see self::ifPresent()} instead.
      */
     public function ifPresentOrElse(callable $action, callable $emptyAction): void
     {
